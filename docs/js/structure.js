@@ -21,7 +21,8 @@ module.exports = [
         {id: 'select-nobuttons', text: 'Hide buttons', fiddle: 'http://jsfiddle.net/NfPcH/31/'},
         {id: 'select-multiple', text: 'Select multiple', fiddle: 'http://jsfiddle.net/NfPcH/30/'},
         {id: 'validate-local', text: 'Validate local', fiddle: 'http://jsfiddle.net/NfPcH/35/'},
-        {id: 'validate-remote', text: 'Validate remote', fiddle: 'http://jsfiddle.net/NfPcH/36/'}
+        {id: 'validate-remote', text: 'Validate remote', fiddle: 'http://jsfiddle.net/NfPcH/36/'},
+        {id: 'o-validator', text: 'Validate inline', fiddle:'#'}
     ]},
 
     {id: 'onbeforesave', text: 'Submit', type: 'demos', items: [

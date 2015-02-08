@@ -1,7 +1,7 @@
 /*!
 angular-xeditable - 0.1.8
 Edit-in-place for angular.js
-Build date: 2014-01-10 
+Build date: 2015-02-09 
 */
 /**
  * Angular-xeditable module 
@@ -273,8 +273,8 @@ angular.module('xeditable').factory('editableController',
   function($q, editableUtils) {
 
   //EditableController function
-  EditableController.$inject = ['$scope', '$attrs', '$element', '$parse', 'editableThemes', 'editableOptions', '$rootScope', '$compile', '$q'];
-  function EditableController($scope, $attrs, $element, $parse, editableThemes, editableOptions, $rootScope, $compile, $q) {
+  EditableController.$inject = ['$scope', '$attrs', '$element', '$parse', 'editableThemes', 'editableOptions', '$rootScope', '$compile', '$q','editableValidator'];
+  function EditableController($scope, $attrs, $element, $parse, editableThemes, editableOptions, $rootScope, $compile, $q,editableValidator) {
     var valueGetter;
 
     //if control is disabled - it does not participate in waiting process
@@ -410,11 +410,18 @@ angular.module('xeditable').factory('editableController',
        * @memberOf editable-element
        */
       if ($attrs.onbeforesave) {
+        console.log('ele direc onbeforesave:'+$attrs.onbeforesave);
         self.onbeforesave = function() {
+          console.log($scope);
           return self.catchError($parse($attrs.onbeforesave)($scope));
         };
       }
-
+      if ($attrs.oValidator) {
+        console.log('ele direc validator:'+$attrs.oValidator);
+        self.validate = function() {
+          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator));
+        };
+      }
       /**
        * Called during submit after value is saved to model.  
        * See [demo](#onaftersave).
@@ -423,10 +430,12 @@ angular.module('xeditable').factory('editableController',
        * @memberOf editable-element
        */
       if ($attrs.onaftersave) {
+
         self.onaftersave = function() {
           return self.catchError($parse($attrs.onaftersave)($scope));
         };
       }
+
 
       // watch change of model to update editable element
       // now only add/remove `editable-empty` class.
@@ -702,6 +711,8 @@ angular.module('xeditable').factory('editableController',
     self.oncancel = angular.noop;
     self.onbeforesave = angular.noop;
     self.onaftersave = angular.noop;
+    self.validate = angular.noop;//added by hung doan, to validate user input
+
   }
 
   return EditableController;
@@ -892,6 +903,7 @@ angular.module('xeditable').factory('editableFormController',
 
   var base = {
     $addEditable: function(editable) {
+      console.log('$addEditable');
       //console.log('add editable', editable.elem, editable.elem.bind);
       this.$editables.push(editable);
 
@@ -910,6 +922,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $removeEditable: function(editable) {
+      console.log('$removeEditable');
       //arrayRemove
       for(var i=0; i < this.$editables.length; i++) {
         if(this.$editables[i] === editable) {
@@ -926,6 +939,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $show: function() {
+      console.log('$show');
       if (this.$visible) {
         return;
       }
@@ -946,6 +960,8 @@ angular.module('xeditable').factory('editableFormController',
       });
 
       //wait promises and activate
+      //
+      
       pc.then({
         onWait: angular.bind(this, this.$setWaiting), 
         onTrue: angular.bind(this, this.$activate), 
@@ -972,6 +988,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $activate: function(name) {
+      console.log('$activate : '+ name);
       var i;
       if (this.$editables.length) {
         //activate by name
@@ -979,6 +996,7 @@ angular.module('xeditable').factory('editableFormController',
           for(i=0; i<this.$editables.length; i++) {
             if (this.$editables[i].name === name) {
               this.$editables[i].activate();
+              console.log('$activate 1');
               return;
             }
           }
@@ -988,6 +1006,7 @@ angular.module('xeditable').factory('editableFormController',
         for(i=0; i<this.$editables.length; i++) {
           if (this.$editables[i].error) {
             this.$editables[i].activate();
+            console.log('$activate 2');
             return;
           }
         }
@@ -1004,6 +1023,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $hide: function() {
+      console.log('$hide');
       if (!this.$visible) {
         return;
       }      
@@ -1026,6 +1046,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $cancel: function() {
+      console.log('$cancel');
       if (!this.$visible) {
         return;
       }      
@@ -1040,6 +1061,7 @@ angular.module('xeditable').factory('editableFormController',
     },    
 
     $setWaiting: function(value) {
+      console.log('$setWaiting');
       this.$waiting = !!value;
       // we can't just set $waiting variable and use it via ng-disabled in children
       // because in editable-row form is not accessible
@@ -1057,6 +1079,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $setError: function(name, msg) {
+      console.log('$setError');
       angular.forEach(this.$editables, function(editable) {
         if(!name || editable.name === name) {
           editable.setError(msg);
@@ -1065,6 +1088,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $submit: function() {
+      console.log('$submit');
       if (this.$waiting) {
         return;
       } 
@@ -1072,39 +1096,55 @@ angular.module('xeditable').factory('editableFormController',
       //clear errors
       this.$setError(null, '');
 
-      //children onbeforesave
-      var pc = editablePromiseCollection();
+      
+      var pcValidate = editablePromiseCollection();
+      //children validate
       angular.forEach(this.$editables, function(editable) {
-        pc.when(editable.onbeforesave());
-      });
 
-      /*
-      onbeforesave result:
-      - true/undefined: save data and close form
-      - false: close form without saving
-      - string: keep form open and show error
-      */
-      pc.then({
-        onWait: angular.bind(this, this.$setWaiting), 
-        onTrue: angular.bind(this, checkSelf, true), 
-        onFalse: angular.bind(this, checkSelf, false), 
-        onString: angular.bind(this, this.$activate)
+        pcValidate.when(editable.validate());
       });
+      pcValidate.then({
+            onWait: angular.bind(this, this.$setWaiting), 
+            onTrue: angular.bind(this, runBeforeSave), 
+            onFalse: angular.bind(this, this.$hide), 
+            onString: angular.bind(this, this.$activate)
+          });
+      function runBeforeSave()
+      {
+         var pcBeforeSave = editablePromiseCollection();
+         //children onbeforesave
+          angular.forEach(this.$editables, function(editable) {
+            pcBeforeSave.when(editable.onbeforesave());
+          });
+          /*
+          onbeforesave result:
+          - true/undefined: save data and close form
+          - false: close form without saving
+          - string: keep form open and show error
+          */
+          pcBeforeSave.then({
+            onWait: angular.bind(this, this.$setWaiting), 
+            onTrue: angular.bind(this, checkSelf, true), 
+            onFalse: angular.bind(this, checkSelf, false), 
+            onString: angular.bind(this, this.$activate)
+          });
 
-      //save
-      function checkSelf(childrenTrue){
-        var pc = editablePromiseCollection();
-        pc.when(this.$onbeforesave());
-        pc.then({
-          onWait: angular.bind(this, this.$setWaiting), 
-          onTrue: childrenTrue ? angular.bind(this, this.$save) : angular.bind(this, this.$hide), 
-          onFalse: angular.bind(this, this.$hide), 
-          onString: angular.bind(this, this.$activate)
-        });
+          //save
+          function checkSelf(childrenTrue){
+            var pc = editablePromiseCollection();
+            pc.when(this.$onbeforesave());
+            pc.then({
+              onWait: angular.bind(this, this.$setWaiting), 
+              onTrue: childrenTrue ? angular.bind(this, this.$save) : angular.bind(this, this.$hide), 
+              onFalse: angular.bind(this, this.$hide), 
+              onString: angular.bind(this, this.$activate)
+            });
+          }
       }
     },
 
     $save: function() {
+      console.log('$save');
       // write model for each editable
       angular.forEach(this.$editables, function(editable) {
         editable.save();
@@ -1278,6 +1318,7 @@ angular.module('xeditable').directive('editableForm',
                * 
                */
               if(attrs.onbeforesave) {
+                console.log('form direc:'+attrs.onaftersave);
                 eForm.$onbeforesave = function() {
                   return $parse(attrs.onbeforesave)(scope, {$data: eForm.$data});
                 };
@@ -1292,6 +1333,7 @@ angular.module('xeditable').directive('editableForm',
                * 
                */
               if(attrs.onaftersave) {
+
                 eForm.$onaftersave = function() {
                   return $parse(attrs.onaftersave)(scope, {$data: eForm.$data});
                 };
@@ -1587,3 +1629,166 @@ angular.module('xeditable').factory('editableThemes', function() {
 
   return themes;
 });
+
+(function () {
+    angular.module('xeditable')
+        .run(['editableValidationRules',
+            function (editableValidationRules) {
+                function max300chars(value)
+                {
+                    return value.length <=300;
+                }
+                function number(value)
+                {
+                    var patt = new RegExp(/^\d+$/);
+                    return patt.test(value);
+                }
+                function required(value)
+                {
+                    return (!!value) && (typeof (value === "String") && value.trim().length > 0);
+                }
+                editableValidationRules.addValidator({
+                    validatorName:'max300chars',
+                    errorMsg: 'Max 300 characters',
+                    validationFunc: max300chars
+                });
+                editableValidationRules.addValidator({
+                    validatorName:'required',
+                    errorMsg: 'Required',
+                    validationFunc: required
+                });
+                editableValidationRules.addValidator({
+                    validatorName:'number',
+                    errorMsg: 'Have to be a number',
+                    validationFunc: number
+                });
+            }
+        ]);
+}).call();
+
+'use trick';
+(function(){
+
+
+function editableValidationRules(){
+  var validatorFuncs={};//validator container
+  var errorMsgs={};//validator container
+  var validationRule={};
+
+  /**
+   * addValidator description
+   * @param {object} options input
+   * @param {string} options.validatorName validation name
+   * @param {string} options.errorMsg error msg
+   * @param {function} options.validatorFunc function to validate
+   */
+  validationRule.addValidator = function (options){
+
+    //check if current validationName isExist
+    if(angular.isDefined(validatorFuncs[options.validatorName]))
+      {
+        throw 'Your validation name : "'+options.validatorName+'" already exists';
+      }
+    // If there is no exist validator, then push it to the list
+    validatorFuncs[options.validatorName] = options.validationFunc;
+    errorMsgs[options.validatorName] = options.errorMsg;
+  };//End addValidator
+  
+  validationRule.getMsg = function(validatorName){
+    return errorMsgs[validatorName];
+  };
+  validationRule.getValidatorFunc = function(validatorName){
+    return validatorFuncs[validatorName];
+  };
+  /*validationRule.validatorIsExist = function(varlidatorNames){
+    var validatorList = varlidatorNames.split(',');
+    for(var i = 0; i < validatorList.length; i++)
+    {
+      if(!angular.isDefined(validatorFuncs[validatorList[i].trim()]))
+      {
+        return false;
+      }
+    }
+    return true;
+  };//End validatorIsExist*/
+  return validationRule;
+}
+
+editableValidator.$inject = ['$q','editableValidationRules'];
+function editableValidator($q,editableValidationRules){
+   var validator = {};
+   function runValidate(value, validationName){
+    var deferred = $q.defer();
+    var validateResult;
+    var validatorFunc = editableValidationRules.getValidatorFunc(validationName);
+    validateResult = validatorFunc(value);
+    if(angular.isObject(validateResult))
+    {
+      validateResult.then(function(result){
+        if(result)
+        {
+          deferred.resolve({
+            isValid: true}
+            );
+        }
+        else{
+          deferred.resolve({
+            isValid: false,
+            msg : editableValidationRules.getMsg(validationName)
+          });
+        }
+      },function(){
+        deferred.resolve({
+            isValid: false,
+            msg : editableValidationRules.getMsg(validationName)
+          });
+      });
+    }
+    else if(validateResult){
+      deferred.resolve({
+        isValid: true
+      });
+    }
+    else{
+     deferred.resolve({
+        isValid: false,
+        msg : editableValidationRules.getMsg(validationName)
+      });
+    }
+    return deferred.promise;
+   }
+  validator.validate = function (value, validatorNames){
+    var validatorList = validatorNames.split(','),
+        validatorName;
+       
+  
+    var promiseList = [];
+
+    for(var i = 0; i < validatorList.length; i++)
+    {
+      validatorName = validatorList[i].trim();
+      promiseList.push(runValidate(value, validatorName));
+    }
+
+    var promises = $q.all(promiseList).then(function(values){
+      for(var i = 0; i < values.length; i++)
+      {
+        if(!values[i].isValid)
+        {
+          return values[i].msg;
+        }
+      }
+      return true;
+    });
+
+    return promises;
+  };
+
+  return validator;
+}
+
+angular.module('xeditable')
+  .factory('editableValidator',editableValidator)
+  .factory('editableValidationRules',editableValidationRules);
+
+}).call();

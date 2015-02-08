@@ -39,7 +39,7 @@
             <li class="active"><a href="#">Home</a></li>
             <li><a href="https://github.com/vitalets/angular-xeditable">Github</a></li>
           </ul>
-          <form class="navbar-form navbar-right"><a href="zip/angular-xeditable-0.1.8.zip" style="font-weight:bold" class="btn btn-primary"><span style="margin-right:10px" class="glyphicon glyphicon-save"></span>Download 0.1.8 ~ 17kb</a></form>
+          <form class="navbar-form navbar-right"><a href="zip/angular-xeditable-0.1.8.zip" style="font-weight:bold" class="btn btn-primary"><span style="margin-right:10px" class="glyphicon glyphicon-save"></span>Download 0.1.8 ~ 20kb</a></form>
           <div style="padding-top: 13px">
 <!-- google+ -->
 <div id="socials" style="text-align: center">
@@ -116,6 +116,7 @@
                   <li><a href="#select-multiple">Select multiple</a></li>
                   <li><a href="#validate-local">Validate local</a></li>
                   <li><a href="#validate-remote">Validate remote</a></li>
+                  <li><a href="#o-validator">Validate inline</a></li>
                 </ul>
               </li>
               <li><a href="#onbeforesave">Submit</a>
@@ -668,8 +669,8 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["radiolist"]=v; }); });
   </a>
 </div></div>
                       <pre>{{ debug["bsdate"] | json }}</pre>
-                      <p><p>Date control is implemented via <a href="http://angular-ui.github.io/bootstrap/#/datepicker">Angular-ui bootstrap datepicker</a>.<br>You should include additional <code>ui-bootstrap-tpls.min.js</code>:</p>
-<pre class="prettyprint">&lt;script src=&quot;//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js&quot;&gt;&lt;/script&gt;</pre>
+                      <p><p>Date control is implemented via <a href="http://angular-ui.github.io/bootstrap/#/datepicker">Angular-ui bootstrap datepicker</a>.<br><strong>Currently it has only Bootstrap 2 version</strong>, Bootstrap 3 version is <a href="https://github.com/angular-ui/bootstrap/issues?milestone=6">in progress</a>.<br>You should include additional <code>ui-bootstrap-tpls.min.js</code>:</p>
+<pre class="prettyprint">&lt;script src=&quot;//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.6.0/ui-bootstrap-tpls.min.js&quot;&gt;&lt;/script&gt;</pre>
 <p>Add <code>ui.bootstrap</code> as module dependency:</p>
 <pre class="prettyprint">var app = angular.module(&quot;app&quot;, [&quot;xeditable&quot;, &quot;ui.bootstrap&quot;]);</pre>
 <p>And set <code>editable-bsdate</code> attribute in editable element.
@@ -1087,6 +1088,50 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["validate-remote"]=v; }
     });
     return d.promise;
   };
+});</pre>
+                    </section>
+                    <section id="o-validator">
+                      <h1>Validate inline</h1>
+                      <!-- watch change of user to update rootScope for debugging-->
+                      <h3>demo</h3><a href="#" target="_blank" class="btn btn-info fiddle pull-right">jsFiddle</a>
+                      <div class="well line-example"><div ng-controller="OValidatorCtrl">
+  <a href="#" o-validator="required" onbeforesave="checkname($data)" editable-text="user.name">{{ user.name || 'empty' }}</a>
+</div></div>
+                      <pre>{{ debug["o-validator"] | json }}</pre>
+                      <p><p>To validate a form field you can add <code>o-validator</code> attribute to validate your input. <code>o-validator</code> can be inputed by multiple validator(which are seperated by comma).
+To define your own validation rule, you have to config your rules in <code>editableValidationRules</code> factory.</p>
+</p>
+                      <!--script(src=dir+'/controller.js')-->
+                      <script>app.controller('OValidatorCtrl', function($scope) {
+
+  $scope.user = {
+    name: 'awesome user'
+  };
+  $scope.isCheckedname = false;
+
+  $scope.checkname= function()
+  {
+  	$scope.isCheckedname = true;
+
+  }  
+$scope.$watch("user", function(v) { $scope.$parent.debug["o-validator"]=v; }); });</script>
+                      <h3>html</h3>
+                      <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;OValidatorCtrl&quot;&gt;
+  &lt;a href=&quot;#&quot; o-validator=&quot;required&quot; onbeforesave=&quot;checkname($data)&quot; editable-text=&quot;user.name&quot;&gt;{{ user.name || 'empty' }}&lt;/a&gt;
+&lt;/div&gt;</pre>
+                      <h3>controller.js</h3>
+                      <pre class="prettyprint">app.controller('OValidatorCtrl', function($scope) {
+
+  $scope.user = {
+    name: 'awesome user'
+  };
+  $scope.isCheckedname = false;
+
+  $scope.checkname= function()
+  {
+  	$scope.isCheckedname = true;
+
+  }  
 });</pre>
                     </section>
                     <section id="onbeforesave">

@@ -1,6 +1,11 @@
 Angular-xeditable changelog
 =============================
 
+Version 0.1.9 Feb 09, 2015
+----------------------------
+[enh] Add validator attribute
+
+
 Version 0.1.8 Jan 10, 2014
 ----------------------------
 [enh] added checklist directive (vitalets)

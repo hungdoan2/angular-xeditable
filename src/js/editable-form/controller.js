@@ -50,6 +50,7 @@ angular.module('xeditable').factory('editableFormController',
 
   var base = {
     $addEditable: function(editable) {
+      console.log('$addEditable');
       //console.log('add editable', editable.elem, editable.elem.bind);
       this.$editables.push(editable);
 
@@ -68,6 +69,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $removeEditable: function(editable) {
+      console.log('$removeEditable');
       //arrayRemove
       for(var i=0; i < this.$editables.length; i++) {
         if(this.$editables[i] === editable) {
@@ -84,6 +86,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $show: function() {
+      console.log('$show');
       if (this.$visible) {
         return;
       }
@@ -104,6 +107,8 @@ angular.module('xeditable').factory('editableFormController',
       });
 
       //wait promises and activate
+      //
+      
       pc.then({
         onWait: angular.bind(this, this.$setWaiting), 
         onTrue: angular.bind(this, this.$activate), 
@@ -130,6 +135,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $activate: function(name) {
+      console.log('$activate : '+ name);
       var i;
       if (this.$editables.length) {
         //activate by name
@@ -137,6 +143,7 @@ angular.module('xeditable').factory('editableFormController',
           for(i=0; i<this.$editables.length; i++) {
             if (this.$editables[i].name === name) {
               this.$editables[i].activate();
+              console.log('$activate 1');
               return;
             }
           }
@@ -146,6 +153,7 @@ angular.module('xeditable').factory('editableFormController',
         for(i=0; i<this.$editables.length; i++) {
           if (this.$editables[i].error) {
             this.$editables[i].activate();
+            console.log('$activate 2');
             return;
           }
         }
@@ -162,6 +170,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $hide: function() {
+      console.log('$hide');
       if (!this.$visible) {
         return;
       }      
@@ -184,6 +193,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $cancel: function() {
+      console.log('$cancel');
       if (!this.$visible) {
         return;
       }      
@@ -198,6 +208,7 @@ angular.module('xeditable').factory('editableFormController',
     },    
 
     $setWaiting: function(value) {
+      console.log('$setWaiting');
       this.$waiting = !!value;
       // we can't just set $waiting variable and use it via ng-disabled in children
       // because in editable-row form is not accessible
@@ -215,6 +226,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $setError: function(name, msg) {
+      console.log('$setError');
       angular.forEach(this.$editables, function(editable) {
         if(!name || editable.name === name) {
           editable.setError(msg);
@@ -223,6 +235,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $submit: function() {
+      console.log('$submit');
       if (this.$waiting) {
         return;
       } 
@@ -230,39 +243,55 @@ angular.module('xeditable').factory('editableFormController',
       //clear errors
       this.$setError(null, '');
 
-      //children onbeforesave
-      var pc = editablePromiseCollection();
+      
+      var pcValidate = editablePromiseCollection();
+      //children validate
       angular.forEach(this.$editables, function(editable) {
-        pc.when(editable.onbeforesave());
-      });
 
-      /*
-      onbeforesave result:
-      - true/undefined: save data and close form
-      - false: close form without saving
-      - string: keep form open and show error
-      */
-      pc.then({
-        onWait: angular.bind(this, this.$setWaiting), 
-        onTrue: angular.bind(this, checkSelf, true), 
-        onFalse: angular.bind(this, checkSelf, false), 
-        onString: angular.bind(this, this.$activate)
+        pcValidate.when(editable.validate());
       });
+      pcValidate.then({
+            onWait: angular.bind(this, this.$setWaiting), 
+            onTrue: angular.bind(this, runBeforeSave), 
+            onFalse: angular.bind(this, this.$hide), 
+            onString: angular.bind(this, this.$activate)
+          });
+      function runBeforeSave()
+      {
+         var pcBeforeSave = editablePromiseCollection();
+         //children onbeforesave
+          angular.forEach(this.$editables, function(editable) {
+            pcBeforeSave.when(editable.onbeforesave());
+          });
+          /*
+          onbeforesave result:
+          - true/undefined: save data and close form
+          - false: close form without saving
+          - string: keep form open and show error
+          */
+          pcBeforeSave.then({
+            onWait: angular.bind(this, this.$setWaiting), 
+            onTrue: angular.bind(this, checkSelf, true), 
+            onFalse: angular.bind(this, checkSelf, false), 
+            onString: angular.bind(this, this.$activate)
+          });
 
-      //save
-      function checkSelf(childrenTrue){
-        var pc = editablePromiseCollection();
-        pc.when(this.$onbeforesave());
-        pc.then({
-          onWait: angular.bind(this, this.$setWaiting), 
-          onTrue: childrenTrue ? angular.bind(this, this.$save) : angular.bind(this, this.$hide), 
-          onFalse: angular.bind(this, this.$hide), 
-          onString: angular.bind(this, this.$activate)
-        });
+          //save
+          function checkSelf(childrenTrue){
+            var pc = editablePromiseCollection();
+            pc.when(this.$onbeforesave());
+            pc.then({
+              onWait: angular.bind(this, this.$setWaiting), 
+              onTrue: childrenTrue ? angular.bind(this, this.$save) : angular.bind(this, this.$hide), 
+              onFalse: angular.bind(this, this.$hide), 
+              onString: angular.bind(this, this.$activate)
+            });
+          }
       }
     },
 
     $save: function() {
+      console.log('$save');
       // write model for each editable
       angular.forEach(this.$editables, function(editable) {
         editable.save();

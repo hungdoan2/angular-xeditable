@@ -1,0 +1,2 @@
+To validate a form field you can add `o-validator` attribute to validate your input. `o-validator` can be inputed by multiple validator(which are seperated by comma).
+To define your own validation rule, you have to config your rules in `editableValidationRules` factory.

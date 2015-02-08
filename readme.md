@@ -1,5 +1,7 @@
 # Angular-xeditable
 Edit in place for AngularJS
+NOTE THAT: THIS IS A FORK VERSION OF ANGULARJ-XEDITABLE
+There are some modification for my own project
 
 ## Overview
 **Angular-xeditable** is a bundle of [AngularJS](http://angularjs.org) directives that allows you to create
@@ -32,7 +34,7 @@ http://plnkr.co/edit/BjWwXIlYyyLvRnVwO8m8?p=preview
 
 ## Roadmap
 
-* select2
+* ui-select
 * [checklist](https://github.com/vitalets/checklist-model)
 * [combodate](https://github.com/vitalets/combodate)
 * popup mode (waiting https://github.com/angular-ui/bootstrap/pull/1391)

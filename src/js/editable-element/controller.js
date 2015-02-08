@@ -12,8 +12,8 @@ angular.module('xeditable').factory('editableController',
   function($q, editableUtils) {
 
   //EditableController function
-  EditableController.$inject = ['$scope', '$attrs', '$element', '$parse', 'editableThemes', 'editableOptions', '$rootScope', '$compile', '$q'];
-  function EditableController($scope, $attrs, $element, $parse, editableThemes, editableOptions, $rootScope, $compile, $q) {
+  EditableController.$inject = ['$scope', '$attrs', '$element', '$parse', 'editableThemes', 'editableOptions', '$rootScope', '$compile', '$q','editableValidator'];
+  function EditableController($scope, $attrs, $element, $parse, editableThemes, editableOptions, $rootScope, $compile, $q,editableValidator) {
     var valueGetter;
 
     //if control is disabled - it does not participate in waiting process
@@ -149,11 +149,18 @@ angular.module('xeditable').factory('editableController',
        * @memberOf editable-element
        */
       if ($attrs.onbeforesave) {
+        console.log('ele direc onbeforesave:'+$attrs.onbeforesave);
         self.onbeforesave = function() {
+          console.log($scope);
           return self.catchError($parse($attrs.onbeforesave)($scope));
         };
       }
-
+      if ($attrs.oValidator) {
+        console.log('ele direc validator:'+$attrs.oValidator);
+        self.validate = function() {
+          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator));
+        };
+      }
       /**
        * Called during submit after value is saved to model.  
        * See [demo](#onaftersave).
@@ -162,10 +169,12 @@ angular.module('xeditable').factory('editableController',
        * @memberOf editable-element
        */
       if ($attrs.onaftersave) {
+
         self.onaftersave = function() {
           return self.catchError($parse($attrs.onaftersave)($scope));
         };
       }
+
 
       // watch change of model to update editable element
       // now only add/remove `editable-empty` class.
@@ -441,6 +450,8 @@ angular.module('xeditable').factory('editableController',
     self.oncancel = angular.noop;
     self.onbeforesave = angular.noop;
     self.onaftersave = angular.noop;
+    self.validate = angular.noop;//added by hung doan, to validate user input
+
   }
 
   return EditableController;
