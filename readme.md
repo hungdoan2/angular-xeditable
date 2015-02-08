@@ -1,5 +1,6 @@
 # Angular-xeditable
 Edit in place for AngularJS
+
 NOTE THAT: THIS IS A FORK VERSION OF ANGULARJ-XEDITABLE
 There are some modification for my own project
 
@@ -11,7 +12,7 @@ It is based on ideas of [x-editable](http://vitalets.github.io/x-editable) but w
 to use power of angular and support complex forms / editable grids.
 
 ## Demo and docs
-**http://vitalets.github.io/angular-xeditable**
+**http://tanhung94.github.io/angular-xeditable/**
 
 ## Installation
 #### Bower
@@ -19,7 +20,7 @@ to use power of angular and support complex forms / editable grids.
 bower install angular-xeditable
 ````
 #### Manual
-Download latest version from [project homepage](http://vitalets.github.io/angular-xeditable).
+Download latest version from [project homepage](http://tanhung94.github.io/angular-xeditable/).
 
 ## Dependencies
 Basically it does not depend on any libraries except [AngularJS](http://angularjs.org) itself.    
