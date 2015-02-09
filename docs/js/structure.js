@@ -22,7 +22,7 @@ module.exports = [
         {id: 'select-multiple', text: 'Select multiple', fiddle: 'http://jsfiddle.net/NfPcH/30/'},
         {id: 'validate-local', text: 'Validate local', fiddle: 'http://jsfiddle.net/NfPcH/35/'},
         {id: 'validate-remote', text: 'Validate remote', fiddle: 'http://jsfiddle.net/NfPcH/36/'},
-        {id: 'o-validator', text: 'Validate inline', fiddle:'#'}
+        {id: 'o-validator', text: 'Validator attribute(single)', fiddle:'#'}
     ]},
 
     {id: 'onbeforesave', text: 'Submit', type: 'demos', items: [
