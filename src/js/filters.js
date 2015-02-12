@@ -27,6 +27,6 @@
           out = items;
         }
         return out;
-      }
+      };
     });
 }).call();

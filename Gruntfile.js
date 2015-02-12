@@ -19,7 +19,7 @@ module.exports = function(grunt) {
   //js hint
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.config('jshint', {
-    options: { },
+    options: { laxbreak: true},
     all: [
       'Gruntfile.js',
       'src/js/**/*.js'
