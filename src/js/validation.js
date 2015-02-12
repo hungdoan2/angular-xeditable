@@ -1,7 +1,5 @@
 'use trick';
 (function(){
-
-
 function editableValidationRules(){
   var validatorFuncs={};//validator container
   var errorMsgs={};//validator container

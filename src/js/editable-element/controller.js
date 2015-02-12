@@ -425,6 +425,8 @@ angular.module('xeditable').factory('editableController',
     };
 
     self.save = function() {
+      console.log('save');
+      console.log(self.scope.$data);
       valueGetter.assign($scope.$parent, angular.copy(self.scope.$data));
 
       // no need to call handleEmpty here as we are watching change of model value

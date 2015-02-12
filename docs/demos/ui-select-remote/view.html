@@ -1,0 +1,15 @@
+<div ng-controller="UiSelectRemoteCtrl">
+  <a href="#" editable-uiselect="user.name" 
+            e-style="width: 300px;"
+            e-template="addressInputTpl"
+            onshow="loadPeople()">
+      {{user.name}}
+  </a>
+</div>
+<script type="text/ng-template" id="addressInputTpl">
+    <ui-select-match placeholder="Enter an user...">{{$select.selected.name}}</ui-select-match>
+    <ui-select-choices repeat="value.name as value in people | uiSelectSearchFilter: {name: $select.search}">
+         <div ng-bind-html="value.name | highlight:$select.search"></div>
+         <div ng-bind="value.email"></div>
+    </ui-select-choices>
+</script>
