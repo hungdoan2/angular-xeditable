@@ -20,6 +20,9 @@
     <script src="libs/jquery/jquery-1.10.2.min.js"></script>
     <!--bootstrap-->
     <script src="libs/bootstrap/3.0.0/js/bootstrap.js"></script>
+    <!--UI-select-->
+    <script src="libs/ui-select/select.js"></script>
+    <link href="libs/ui-select/select.css" rel="stylesheet" media="screen">
     <!--angular-ui-bootstrap-->
     <script src="libs/angular-ui/bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
     <!--google-code-prettify-->
@@ -42,7 +45,7 @@
             <li class="active"><a href="#">Home</a></li>
             <li><a href="https://github.com/vitalets/angular-xeditable">Github</a></li>
           </ul>
-          <form class="navbar-form navbar-right"><a href="zip/angular-xeditable-0.1.9.zip" style="font-weight:bold" class="btn btn-primary"><span style="margin-right:10px" class="glyphicon glyphicon-save"></span>Download 0.1.9 ~ 20kb</a></form>
+          <form class="navbar-form navbar-right"><a href="zip/angular-xeditable-0.1.9.zip" style="font-weight:bold" class="btn btn-primary"><span style="margin-right:10px" class="glyphicon glyphicon-save"></span>Download 0.1.9 ~ 21kb</a></form>
           <div style="padding-top: 13px">
 <!-- google+ -->
 <div id="socials" style="text-align: center">
@@ -870,11 +873,11 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["ui-select-simple"]=v; 
                       <div class="well line-example"><div ng-controller="UiSelectTplCtrl">
   <a href="#" editable-uiselect="user.name" 
             e-style="width: 300px;"
-            e-template="addressInputTpl">
+            e-template="'userListTpl'">
       {{user.name}}
   </a>
 </div>
-<script type="text/ng-template" id="addressInputTpl">
+<script type="text/ng-template" id="userListTpl">
     <ui-select-match placeholder="Enter an user...">{{$select.selected.name}}</ui-select-match>
     <ui-select-choices repeat="value.name as value in people | uiSelectSearchFilter: {name: $select.search}">
          <div ng-bind-html="value.name | highlight:$select.search"></div>
@@ -908,11 +911,11 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["ui-select-template"]=v
                       <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;UiSelectTplCtrl&quot;&gt;
   &lt;a href=&quot;#&quot; editable-uiselect=&quot;user.name&quot; 
             e-style=&quot;width: 300px;&quot;
-            e-template=&quot;addressInputTpl&quot;&gt;
+            e-template=&quot;'userListTpl'&quot;&gt;
       {{user.name}}
   &lt;/a&gt;
 &lt;/div&gt;
-&lt;script type=&quot;text/ng-template&quot; id=&quot;addressInputTpl&quot;&gt;
+&lt;script type=&quot;text/ng-template&quot; id=&quot;userListTpl&quot;&gt;
     &lt;ui-select-match placeholder=&quot;Enter an user...&quot;&gt;{{$select.selected.name}}&lt;/ui-select-match&gt;
     &lt;ui-select-choices repeat=&quot;value.name as value in people | uiSelectSearchFilter: {name: $select.search}&quot;&gt;
          &lt;div ng-bind-html=&quot;value.name | highlight:$select.search&quot;&gt;&lt;/div&gt;
@@ -942,7 +945,7 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["ui-select-template"]=v
                       <div class="well line-example"><div ng-controller="UiSelectRemoteCtrl">
   <a href="#" editable-uiselect="user.name" 
             e-style="width: 300px;"
-            e-template="addressInputTpl"
+            e-template="'addressInputTpl'"
             onshow="loadPeople()">
       {{user.name}}
   </a>
@@ -979,7 +982,7 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["ui-select-remote"]=v; 
                       <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;UiSelectRemoteCtrl&quot;&gt;
   &lt;a href=&quot;#&quot; editable-uiselect=&quot;user.name&quot; 
             e-style=&quot;width: 300px;&quot;
-            e-template=&quot;addressInputTpl&quot;
+            e-template=&quot;'addressInputTpl'&quot;
             onshow=&quot;loadPeople()&quot;&gt;
       {{user.name}}
   &lt;/a&gt;

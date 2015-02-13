@@ -2,17 +2,23 @@
 Angular-ui bootstrap datepicker
 http://angular-ui.github.io/bootstrap/#/datepicker
 */
-angular.module('xeditable').directive('editableUiselect', ['editableDirectiveFactory',
-  function(editableDirectiveFactory) {
+angular.module('xeditable').directive('editableUiselect', ['editableDirectiveFactory', '$templateCache','$parse',
+  function(editableDirectiveFactory,$templateCache,$parse) {
     return editableDirectiveFactory({
       directiveName: 'editableUiselect',
       inputTpl: '<div ui-select></div>',
       render: function() {
         this.parent.render.call(this);
+        console.log(this.scope.addressInputTplId);
         var html = '';
         if(angular.isDefined(this.attrs.eTemplate))
         {
-          html = angular.element('script[type="text/ng-template"]#'+this.attrs.eTemplate).html();
+          html = $templateCache.get($parse(this.attrs.eTemplate)(this.scope));
+          if(!angular.isDefined(html))
+          {
+            console.log('Your "'+this.attrs.eTemplate+'" does not exist!');
+            throw 'Your "'+this.attrs.eTemplate+'" does not exist!';
+          }
         }
         else{
           var displayName = this.attrs.eDisplaynamekey,
