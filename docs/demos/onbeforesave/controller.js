@@ -5,6 +5,7 @@ app.controller('OnbeforesaveCtrl', function($scope, $http) {
   };
 
   $scope.updateUser = function(data) {
+  	console.log(data);
     return $http.post('/updateUser', {id: $scope.user.id, name: data});
   };
-});
+});;

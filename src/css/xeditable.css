@@ -6,6 +6,7 @@
   display: inline-block;
   white-space: nowrap;
   margin: 0;
+  width: 100%;/*to work with bootstrap form-horizontal*/
 }
 
 /* remove bottom-margin for bootstrap */
@@ -112,5 +113,11 @@ a.editable-empty:focus {
   color: #DD1144;  
   text-decoration: none;
 }
+
+/**BS3 input width for form-inline*/
+form.form-inline .editable-wrap{
+  width: auto;
+}
+
 
 

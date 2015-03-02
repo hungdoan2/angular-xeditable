@@ -1,0 +1,25 @@
+<div ng-controller="Custom">
+  <a href="#" editable-custom="user.name" 
+            e-template="'customTpl'"
+            onshow="updateName($modelScope)">
+      {{user.name}}
+  </a>
+</div>
+<script type="text/ng-template" id="customTpl">
+  <table>
+  	<tr>
+  		<td>
+  			First Name
+  		</td>
+  		<td>
+  			<input type="text" ng-model="firstName" ng-change="updateName($modelScope)" />
+  		</td>
+  	</tr>
+  	<tr>
+  		<td>Last Name</td>
+  		<td>
+  			<input type="text" ng-model="lastName"  ng-change="updateName($modelScope)" />
+  		</td>
+  	</td>
+  </table>
+</script>

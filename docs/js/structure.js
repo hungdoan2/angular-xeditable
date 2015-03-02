@@ -14,8 +14,9 @@ module.exports = [
         {id: 'bstime', text: 'Time', fiddle: 'http://jsfiddle.net/NfPcH/34/', fiddleText: 'View Bootstrap 2 jsFiddle'},
         {id: 'typeahead', text: 'Typeahead', fiddle: 'http://jsfiddle.net/NfPcH/46/', fiddleText: 'View Bootstrap 2 jsFiddle'},
         {id: 'ui-select-simple', text: 'ui-select(simple)', fiddle: '#', fiddleText: 'UI Select jsFiddle'},
-        {id: 'ui-select-template', text: 'ui-select(with template)', fiddle: '#', fiddleText: 'UI Select jsFiddle'},        
-        {id: 'ui-select-remote', text: 'ui-select(remote data)', fiddle: '#', fiddleText: 'UI Select jsFiddle'}
+        {id: 'ui-select-template', text: 'ui-select(with template)', fiddle: '#', fiddleText: 'UI Select jsFiddle'},
+        {id: 'ui-select-remote', text: 'ui-select(remote data)', fiddle: '#', fiddleText: 'UI Select jsFiddle'},
+        {id: 'custom', text: 'custom', fiddle: '#', fiddleText: 'UI Select jsFiddle'}
     ]},
 
     {id: 'text-customize', text: 'Techniques', type: 'demos', items: [

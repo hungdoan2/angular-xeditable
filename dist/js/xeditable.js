@@ -1,7 +1,7 @@
 /*!
 angular-xeditable - 0.1.9
 Edit-in-place for angular.js
-Build date: 2015-02-14 
+Build date: 2015-03-02 
 */
 /**
  * Angular-xeditable module 
@@ -148,6 +148,36 @@ angular.module('xeditable').directive('editableChecklist', [
     });
 }]);
 /*
+Angular-ui bootstrap datepicker
+http://angular-ui.github.io/bootstrap/#/datepicker
+*/
+angular.module('xeditable').directive('editableCustom', ['editableDirectiveFactory', '$templateCache','$parse',
+  function(editableDirectiveFactory,$templateCache,$parse) {
+    return editableDirectiveFactory({
+      directiveName: 'editableCustom',
+      inputTpl: '<div></div>',
+      render: function() {
+        var self = this;
+        self.parent.render.call(this);
+
+        var html = '';
+        if(!angular.isDefined(self.attrs.eTemplate))
+        {
+          console.log('Your "'+self.attrs.eTemplate+'" does not exist!');
+        }        
+        html = $templateCache.get($parse(self.attrs.eTemplate)(self.scope));
+        self.inputEl.append(html);
+        //Generate model;
+        //var parser = $parse(self.name);
+        //var defaultValue = parser(self.scope);
+        //self.scope[self.name.split('.')[0]] = {};
+        //parser.assign(self.scope,defaultValue);
+        //
+        self.scope.$modelScope = self.scope;
+      }
+    });
+}]);
+/*
 Input types: text|email|tel|number|url|search|color|date|datetime|time|month|week
 */
 
@@ -164,7 +194,17 @@ Input types: text|email|tel|number|url|search|color|date|datetime|time|month|wee
       function(editableDirectiveFactory) {
         return editableDirectiveFactory({
           directiveName: directiveName,
-          inputTpl: '<input type="'+type+'">'
+          inputTpl: '<input type="'+type+'">',
+          render: function() {
+            this.parent.render.call(this);
+            var inputDirective = this.attrs.oDirective;
+            if(inputDirective)
+            {
+              var dparts = inputDirective.split('=');
+              this.inputEl.attr(dparts[0],dparts[1] || '');              
+            }
+            
+          }
         });
     }]);
   });
@@ -1651,7 +1691,7 @@ angular.module('xeditable').factory('editableThemes', function() {
     'bs3': {
       formTpl:     '<form class="form-inline editable-wrap" role="form"></form>',
       noformTpl:   '<span class="editable-wrap"></span>',
-      controlsTpl: '<div class="editable-controls form-group" ng-class="{\'has-error\': $error}"></div>',
+      controlsTpl: '<div class="editable-controls" ng-class="{\'has-error\': $error}"></div>',
       inputTpl:    '',
       errorTpl:    '<div class="editable-error help-block" ng-show="$error" ng-bind="$error"></div>',
       buttonsTpl:  '<span class="editable-buttons"></span>',
@@ -1708,24 +1748,20 @@ angular.module('xeditable').factory('editableThemes', function() {
     angular.module('xeditable')
         .run(['editableValidationRules',
             function (editableValidationRules) {
-                function max300chars(value)
-                {
-                    return value.length <=300;
-                }
                 function number(value)
                 {
                     var patt = new RegExp(/^\d+$/);
-                    return patt.test(value);
+                    return !(value && !patt.test(value));
+                }
+                function email(value)
+                {
+                    var patt = new RegExp(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/);
+                    return !(value && !patt.test(value));
                 }
                 function required(value)
                 {
-                    return (!!value) && (typeof (value === "String") && value.trim().length > 0);
+                    return value && ((typeof (value) === "string") && value.length > 0);
                 }
-                editableValidationRules.addValidator({
-                    validatorName:'max300chars',
-                    errorMsg: 'Max 300 characters',
-                    validationFunc: max300chars
-                });
                 editableValidationRules.addValidator({
                     validatorName:'required',
                     errorMsg: 'Required',
@@ -1735,6 +1771,12 @@ angular.module('xeditable').factory('editableThemes', function() {
                     validatorName:'number',
                     errorMsg: 'Have to be a number',
                     validationFunc: number
+                });
+
+                editableValidationRules.addValidator({
+                    validatorName:'email',
+                    errorMsg: 'Your email address is not valid',
+                    validationFunc: email
                 });
             }
         ]);
