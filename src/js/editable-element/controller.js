@@ -158,7 +158,7 @@ angular.module('xeditable').factory('editableController',
       if ($attrs.oValidator) {
         console.log('ele direc validator:'+$attrs.oValidator);
         self.validate = function() {
-          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator));
+          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator,$element));
         };
       }
       /**

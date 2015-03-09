@@ -1,7 +1,7 @@
 /*!
 angular-xeditable - 0.1.9
 Edit-in-place for angular.js
-Build date: 2015-03-02 
+Build date: 2015-03-09 
 */
 /**
  * Angular-xeditable module 
@@ -499,7 +499,7 @@ angular.module('xeditable').factory('editableController',
       if ($attrs.oValidator) {
         console.log('ele direc validator:'+$attrs.oValidator);
         self.validate = function() {
-          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator));
+          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator,$element));
         };
       }
       /**
@@ -1831,11 +1831,11 @@ function editableValidationRules(){
 editableValidator.$inject = ['$q','editableValidationRules'];
 function editableValidator($q,editableValidationRules){
    var validator = {};
-   function runValidate(value, validationName){
+   function runValidate(value, validationName,element){
     var deferred = $q.defer();
     var validateResult;
     var validatorFunc = editableValidationRules.getValidatorFunc(validationName);
-    validateResult = validatorFunc(value);
+    validateResult = validatorFunc(value,element);
     if(angular.isObject(validateResult))
     {
       validateResult.then(function(result){
@@ -1871,7 +1871,7 @@ function editableValidator($q,editableValidationRules){
     }
     return deferred.promise;
    }
-  validator.validate = function (value, validatorNames){
+  validator.validate = function (value, validatorNames, element){
     var validatorList = validatorNames.split(','),
         validatorName;
        
@@ -1881,7 +1881,7 @@ function editableValidator($q,editableValidationRules){
     for(var i = 0; i < validatorList.length; i++)
     {
       validatorName = validatorList[i].trim();
-      promiseList.push(runValidate(value, validatorName));
+      promiseList.push(runValidate(value, validatorName,element));
     }
 
     var promises = $q.all(promiseList).then(function(values){
