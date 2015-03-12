@@ -1,7 +1,7 @@
 /*!
 angular-xeditable - 0.1.9
 Edit-in-place for angular.js
-Build date: 2015-03-09 
+Build date: 2015-03-12 
 */
 /**
  * Angular-xeditable module 
@@ -590,6 +590,11 @@ angular.module('xeditable').factory('editableController',
 
       // add directiveName class to editor, e.g. `editable-text`
       self.editorEl.addClass(editableUtils.camelToDash(self.directiveName));
+      // if directiveName == "editable-custom" , remove class form-inline
+      if(self.directiveName === "editableCustom")
+      {
+        self.editorEl.removeClass("form-inline");
+      }
 
       if(self.single) {
         self.editorEl.attr('editable-form', '$form');
@@ -1801,7 +1806,7 @@ function editableValidationRules(){
     //check if current validationName isExist
     if(angular.isDefined(validatorFuncs[options.validatorName]))
       {
-        throw 'Your validation name : "'+options.validatorName+'" already exists';
+        console.log('Your validation name : "'+options.validatorName+'" already exists, we will override it');
       }
     // If there is no exist validator, then push it to the list
     validatorFuncs[options.validatorName] = options.validationFunc;

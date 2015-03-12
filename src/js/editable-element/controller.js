@@ -249,6 +249,11 @@ angular.module('xeditable').factory('editableController',
 
       // add directiveName class to editor, e.g. `editable-text`
       self.editorEl.addClass(editableUtils.camelToDash(self.directiveName));
+      // if directiveName == "editable-custom" , remove class form-inline
+      if(self.directiveName === "editableCustom")
+      {
+        self.editorEl.removeClass("form-inline");
+      }
 
       if(self.single) {
         self.editorEl.attr('editable-form', '$form');
