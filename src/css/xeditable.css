@@ -3,7 +3,7 @@
 
 /* class for single editable element */
 .editable-wrap {
-  display: inline-block;
+  /*display: inline-block;*/
   /*white-space: nowrap;*//**fix layout overlow of submit btn*/
   margin: 0;
   width: 100%;/*to work with bootstrap form-horizontal*/
@@ -24,7 +24,7 @@
 
 /* keep buttons on the same line */
 .editable-wrap .editable-input {
-  display: inline-block;
+  /*display: inline-block;*/
 }
 
 .editable-buttons {
