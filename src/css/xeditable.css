@@ -4,7 +4,7 @@
 /* class for single editable element */
 .editable-wrap {
   display: inline-block;
-  white-space: nowrap;
+  /*white-space: nowrap;*//**fix layout overlow of submit btn*/
   margin: 0;
   width: 100%;/*to work with bootstrap form-horizontal*/
 }
