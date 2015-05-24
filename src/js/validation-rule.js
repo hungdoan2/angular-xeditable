@@ -2,6 +2,8 @@
     angular.module('xeditable')
         .run(['editableValidationRules',
             function (editableValidationRules) {
+                editableValidationRules.setRejectMsg("There is an error white validate");
+
                 function number(value)
                 {
                     var patt = new RegExp(/^\d+$/);
