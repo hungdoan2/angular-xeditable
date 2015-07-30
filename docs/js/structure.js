@@ -12,7 +12,11 @@ module.exports = [
         {id: 'radiolist', text: 'Radiolist', fiddle: ''},
         {id: 'bsdate', text: 'Date', fiddle: 'http://jsfiddle.net/NfPcH/23/', fiddleText: 'View Bootstrap 2 jsFiddle'},
         {id: 'bstime', text: 'Time', fiddle: 'http://jsfiddle.net/NfPcH/34/', fiddleText: 'View Bootstrap 2 jsFiddle'},
-        {id: 'typeahead', text: 'Typeahead', fiddle: 'http://jsfiddle.net/NfPcH/46/', fiddleText: 'View Bootstrap 2 jsFiddle'}
+        {id: 'typeahead', text: 'Typeahead', fiddle: 'http://jsfiddle.net/NfPcH/46/', fiddleText: 'View Bootstrap 2 jsFiddle'},
+        {id: 'ui-select-simple', text: 'ui-select(simple)', fiddle: '#', fiddleText: 'UI Select jsFiddle'},
+        {id: 'ui-select-template', text: 'ui-select(with template)', fiddle: '#', fiddleText: 'UI Select jsFiddle'},
+        {id: 'ui-select-remote', text: 'ui-select(remote data)', fiddle: '#', fiddleText: 'UI Select jsFiddle'},
+        {id: 'custom', text: 'custom', fiddle: '#', fiddleText: 'UI Select jsFiddle'}
     ]},
 
     {id: 'text-customize', text: 'Techniques', type: 'demos', items: [
@@ -22,7 +26,7 @@ module.exports = [
         {id: 'select-multiple', text: 'Select multiple', fiddle: 'http://jsfiddle.net/NfPcH/30/'},
         {id: 'validate-local', text: 'Validate local', fiddle: 'http://jsfiddle.net/NfPcH/35/'},
         {id: 'validate-remote', text: 'Validate remote', fiddle: 'http://jsfiddle.net/NfPcH/36/'},
-        {id: 'o-validator', text: 'Validator attribute(single)', fiddle:'#'}
+        {id: 'o-validator', text: 'Validator attribute', fiddle:'#'}
     ]},
 
     {id: 'onbeforesave', text: 'Submit', type: 'demos', items: [

@@ -1,4 +1,4 @@
-var app = angular.module("app", ["xeditable", "ngMockE2E", 'ui.bootstrap', 'checklist-model']);
+var app = angular.module("app", ["xeditable","ui.select","ngSanitize", "ngMockE2E", 'ui.bootstrap', 'checklist-model']);
 
 //add delay to $httpBackend
 app.config(function($provide) {
@@ -86,6 +86,16 @@ app.run(function($rootScope, $httpBackend, editableOptions, editableThemes) {
     {id: 3, text: 'vip'},
     {id: 4, text: 'admin'}
   ]);
+  $httpBackend.whenGET('/people').respond([
+    { name: 'Adam',      email: 'adam@email.com',      age: 10 },
+    { name: 'Amalie',    email: 'amalie@email.com',    age: 12 },
+    { name: 'Wladimir',  email: 'wladimir@email.com',  age: 30 },
+    { name: 'Samantha',  email: 'samantha@email.com',  age: 31 },
+    { name: 'Estefanía', email: 'estefanía@email.com', age: 16 },
+    { name: 'Natasha',   email: 'natasha@email.com',   age: 54 },
+    { name: 'Nicole',    email: 'nicole@email.com',    age: 43 },
+    { name: 'Adrian',    email: 'adrian@email.com',    age: 21 }
+  ]);
 
   //groups err
   $httpBackend.whenGET('/groups-err').respond(function(method, url, data) {
@@ -140,3 +150,8 @@ function isProd() {
   //return true;
   return window.location.href.indexOf('http://vitalets.github.io/angular-xeditable') >= 0;
 }
+
+app.config(function(uiSelectConfig) {
+  uiSelectConfig.theme = 'bootstrap';
+  uiSelectConfig.resetSearchInput = true;
+});

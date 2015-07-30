@@ -3,7 +3,7 @@
     <div>
       <!-- editable username (text with validation) -->
       <span class="title">User name: </span>
-      <span editable-text="user.name" e-name="name" onbeforesave="checkName($data)" e-required>{{ user.name || 'empty' }}</span>
+      <span editable-text="user.name" e-name="name" o-validator="required" onbeforesave="checkName($data)">{{ user.name || 'empty' }}</span>
     </div> 
 
     <div>

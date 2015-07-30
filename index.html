@@ -11,12 +11,18 @@
     <!--docs css-->
     <link href="docs/css/docs.css" rel="stylesheet" media="screen">
     <!--angular-->
-    <script src="libs/angular/1.2.7/angular.js"></script>
-    <script src="libs/angular/1.2.7/angular-mocks.js"></script>
+    <!--script(src='libs/angular/1.2.7/angular.js')-->
+    <!--script(src='libs/angular/1.2.7/angular-mocks.js')-->
+    <script src="libs/angular/1.3.13/angular.js"></script>
+    <script src="libs/angular/1.3.13/angular-mocks.js"></script>
+    <script src="libs/angular/1.3.13/angular-sanitize.js"></script>
     <!--jquery (needed for bootstrap)-->
     <script src="libs/jquery/jquery-1.10.2.min.js"></script>
     <!--bootstrap-->
     <script src="libs/bootstrap/3.0.0/js/bootstrap.js"></script>
+    <!--UI-select-->
+    <script src="libs/ui-select/select.js"></script>
+    <link href="libs/ui-select/select.css" rel="stylesheet" media="screen">
     <!--angular-ui-bootstrap-->
     <script src="libs/angular-ui/bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
     <!--google-code-prettify-->
@@ -39,7 +45,7 @@
             <li class="active"><a href="#">Home</a></li>
             <li><a href="https://github.com/vitalets/angular-xeditable">Github</a></li>
           </ul>
-          <form class="navbar-form navbar-right"><a href="zip/angular-xeditable-0.1.9.zip" style="font-weight:bold" class="btn btn-primary"><span style="margin-right:10px" class="glyphicon glyphicon-save"></span>Download 0.1.9 ~ 20kb</a></form>
+          <form class="navbar-form navbar-right"><a href="zip/angular-xeditable-0.1.9.zip" style="font-weight:bold" class="btn btn-primary"><span style="margin-right:10px" class="glyphicon glyphicon-save"></span>Download 0.1.9 ~ 22kb</a></form>
           <div style="padding-top: 13px">
 <!-- google+ -->
 <div id="socials" style="text-align: center">
@@ -106,6 +112,10 @@
                   <li><a href="#bsdate">Date</a></li>
                   <li><a href="#bstime">Time</a></li>
                   <li><a href="#typeahead">Typeahead</a></li>
+                  <li><a href="#ui-select-simple">ui-select(simple)</a></li>
+                  <li><a href="#ui-select-template">ui-select(with template)</a></li>
+                  <li><a href="#ui-select-remote">ui-select(remote data)</a></li>
+                  <li><a href="#custom">custom</a></li>
                 </ul>
               </li>
               <li><a href="#text-customize">Techniques</a>
@@ -116,7 +126,7 @@
                   <li><a href="#select-multiple">Select multiple</a></li>
                   <li><a href="#validate-local">Validate local</a></li>
                   <li><a href="#validate-remote">Validate remote</a></li>
-                  <li><a href="#o-validator">Validator attribute(single)</a></li>
+                  <li><a href="#o-validator">Validator attribute</a></li>
                 </ul>
               </li>
               <li><a href="#onbeforesave">Submit</a>
@@ -176,6 +186,10 @@ to use power of angular and support complex forms / editable grids.</p>
 <li><a href="#bstime">time</a></li>
 <li><a href="#html5-inputs">html5 inputs</a>        </li>
 <li><a href="#typeahead">typeahead</a></li>
+<li><a href="#ui-select-simple">ui-select(simple)</a></li>
+<li><a href="#ui-select-template">ui-select(with template)</a></li>
+<li><a href="#ui-select-remote">ui-select(remote data)</a></li>
+<li><a href="#custom">custom</a></li>
 </ul>
 
               </td>
@@ -238,7 +252,7 @@ to use power of angular and support complex forms / editable grids.</p>
                       <!-- watch change of user to update rootScope for debugging-->
                       <h3>demo</h3><a href="http://jsfiddle.net/NfPcH/25/" target="_blank" class="btn btn-info fiddle pull-right">jsFiddle</a>
                       <div class="well line-example"><div ng-controller="TextSimpleCtrl">
-  <a href="#" editable-text="user.name">{{ user.name || 'empty' }}</a>
+  <a href="#" editable-text="user.name" o-directive="hello">{{ user.name || 'empty' }}</a>
 </div></div>
                       <pre>{{ debug["text-simple"] | json }}</pre>
                       <p><p>To make element editable via textbox just add <code>editable-text=&quot;model.field&quot;</code> attribute.</p>
@@ -251,7 +265,7 @@ to use power of angular and support complex forms / editable grids.</p>
 $scope.$watch("user", function(v) { $scope.$parent.debug["text-simple"]=v; }); });</script>
                       <h3>html</h3>
                       <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;TextSimpleCtrl&quot;&gt;
-  &lt;a href=&quot;#&quot; editable-text=&quot;user.name&quot;&gt;{{ user.name || 'empty' }}&lt;/a&gt;
+  &lt;a href=&quot;#&quot; editable-text=&quot;user.name&quot; o-directive=&quot;hello&quot;&gt;{{ user.name || 'empty' }}&lt;/a&gt;
 &lt;/div&gt;</pre>
                       <h3>controller.js</h3>
                       <pre class="prettyprint">app.controller('TextSimpleCtrl', function($scope) {
@@ -790,6 +804,298 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["typeahead"]=v; }); });
   $scope.states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Dakota', 'North Carolina', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 });</pre>
                     </section>
+                    <section id="ui-select-simple">
+                      <h1>ui-select(simple)</h1>
+                      <!-- watch change of user to update rootScope for debugging-->
+                      <h3>demo</h3><a href="#" target="_blank" class="btn btn-info fiddle pull-right">UI Select jsFiddle</a>
+                      <div class="well line-example"><div ng-controller="UiSelectSimpleCtrl">
+  <a href="#" editable-uiselect="user.name" 
+            e-style="width: 300px;"
+            e-datasrc="people"
+            e-valuekey="name"
+            e-displaynamekey="email">
+      {{user.name}}
+  </a>
+</div></div>
+                      <pre>{{ debug["ui-select-simple"] | json }}</pre>
+                      <p><p>Date control is implemented via <a href="https://github.com/angular-ui/ui-select/">Angular-ui ui-select</a>.  </p>
+<p>And set <code>editable-uiselect</code> attribute in editable element.
+Other parameters can be defined via <code>e-*</code> syntax.</p>
+<ul>
+<li><code>e-datasrc</code> : data source</li>
+<li><code>e-valuekey</code> : which property will present for your value</li>
+<li><code>e-displaynamekey</code> : which property will present for your display string</li>
+</ul>
+</p>
+                      <!--script(src=dir+'/controller.js')-->
+                      <script>app.controller('UiSelectSimpleCtrl', function($scope, $http, $q) {
+  $scope.user = { name: 'Adam'};
+  $scope.people = [
+    { name: 'Adam',      email: 'adam@email.com',      age: 10 },
+    { name: 'Amalie',    email: 'amalie@email.com',    age: 12 },
+    { name: 'Wladimir',  email: 'wladimir@email.com',  age: 30 },
+    { name: 'Samantha',  email: 'samantha@email.com',  age: 31 },
+    { name: 'Estefanía', email: 'estefanía@email.com', age: 16 },
+    { name: 'Natasha',   email: 'natasha@email.com',   age: 54 },
+    { name: 'Nicole',    email: 'nicole@email.com',    age: 43 },
+    { name: 'Adrian',    email: 'adrian@email.com',    age: 21 }
+  ];
+  
+$scope.$watch("user", function(v) { $scope.$parent.debug["ui-select-simple"]=v; }); });</script>
+                      <h3>html</h3>
+                      <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;UiSelectSimpleCtrl&quot;&gt;
+  &lt;a href=&quot;#&quot; editable-uiselect=&quot;user.name&quot; 
+            e-style=&quot;width: 300px;&quot;
+            e-datasrc=&quot;people&quot;
+            e-valuekey=&quot;name&quot;
+            e-displaynamekey=&quot;email&quot;&gt;
+      {{user.name}}
+  &lt;/a&gt;
+&lt;/div&gt;</pre>
+                      <h3>controller.js</h3>
+                      <pre class="prettyprint">app.controller('UiSelectSimpleCtrl', function($scope, $http, $q) {
+  $scope.user = { name: 'Adam'};
+  $scope.people = [
+    { name: 'Adam',      email: 'adam@email.com',      age: 10 },
+    { name: 'Amalie',    email: 'amalie@email.com',    age: 12 },
+    { name: 'Wladimir',  email: 'wladimir@email.com',  age: 30 },
+    { name: 'Samantha',  email: 'samantha@email.com',  age: 31 },
+    { name: 'Estefanía', email: 'estefanía@email.com', age: 16 },
+    { name: 'Natasha',   email: 'natasha@email.com',   age: 54 },
+    { name: 'Nicole',    email: 'nicole@email.com',    age: 43 },
+    { name: 'Adrian',    email: 'adrian@email.com',    age: 21 }
+  ];
+  
+});</pre>
+                    </section>
+                    <section id="ui-select-template">
+                      <h1>ui-select(with template)</h1>
+                      <!-- watch change of user to update rootScope for debugging-->
+                      <h3>demo</h3><a href="#" target="_blank" class="btn btn-info fiddle pull-right">UI Select jsFiddle</a>
+                      <div class="well line-example"><div ng-controller="UiSelectTplCtrl">
+  <a href="#" editable-uiselect="user.name" 
+            e-style="width: 300px;"
+            e-template="'userListTpl'">
+      {{user.name}}
+  </a>
+</div>
+<script type="text/ng-template" id="userListTpl">
+    <ui-select-match placeholder="Enter an user...">{{$select.selected.name}}</ui-select-match>
+    <ui-select-choices repeat="value.name as value in people | uiSelectSearchFilter: {name: $select.search}">
+         <div ng-bind-html="value.name | highlight:$select.search"></div>
+         <div ng-bind="value.email"></div>
+    </ui-select-choices>
+</script></div>
+                      <pre>{{ debug["ui-select-template"] | json }}</pre>
+                      <p><p>Date control is implemented via <a href="https://github.com/angular-ui/ui-select/">Angular-ui ui-select</a>.  </p>
+<p>And set <code>editable-uiselect</code> attribute in editable element.
+Other parameters can be defined via <code>e-*</code> syntax.</p>
+<ul>
+<li><code>e-template</code> : template for your control (which will be appended to <code>&lt;ui-select&gt;</code> element)</li>
+</ul>
+</p>
+                      <!--script(src=dir+'/controller.js')-->
+                      <script>app.controller('UiSelectTplCtrl', function($scope, $http, $q) {
+  $scope.user = { name: 'Adam'};
+  $scope.people = [
+    { name: 'Adam',      email: 'adam@email.com',      age: 10 },
+    { name: 'Amalie',    email: 'amalie@email.com',    age: 12 },
+    { name: 'Wladimir',  email: 'wladimir@email.com',  age: 30 },
+    { name: 'Samantha',  email: 'samantha@email.com',  age: 31 },
+    { name: 'Estefanía', email: 'estefanía@email.com', age: 16 },
+    { name: 'Natasha',   email: 'natasha@email.com',   age: 54 },
+    { name: 'Nicole',    email: 'nicole@email.com',    age: 43 },
+    { name: 'Adrian',    email: 'adrian@email.com',    age: 21 }
+  ];
+  
+$scope.$watch("user", function(v) { $scope.$parent.debug["ui-select-template"]=v; }); });</script>
+                      <h3>html</h3>
+                      <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;UiSelectTplCtrl&quot;&gt;
+  &lt;a href=&quot;#&quot; editable-uiselect=&quot;user.name&quot; 
+            e-style=&quot;width: 300px;&quot;
+            e-template=&quot;'userListTpl'&quot;&gt;
+      {{user.name}}
+  &lt;/a&gt;
+&lt;/div&gt;
+&lt;script type=&quot;text/ng-template&quot; id=&quot;userListTpl&quot;&gt;
+    &lt;ui-select-match placeholder=&quot;Enter an user...&quot;&gt;{{$select.selected.name}}&lt;/ui-select-match&gt;
+    &lt;ui-select-choices repeat=&quot;value.name as value in people | uiSelectSearchFilter: {name: $select.search}&quot;&gt;
+         &lt;div ng-bind-html=&quot;value.name | highlight:$select.search&quot;&gt;&lt;/div&gt;
+         &lt;div ng-bind=&quot;value.email&quot;&gt;&lt;/div&gt;
+    &lt;/ui-select-choices&gt;
+&lt;/script&gt;</pre>
+                      <h3>controller.js</h3>
+                      <pre class="prettyprint">app.controller('UiSelectTplCtrl', function($scope, $http, $q) {
+  $scope.user = { name: 'Adam'};
+  $scope.people = [
+    { name: 'Adam',      email: 'adam@email.com',      age: 10 },
+    { name: 'Amalie',    email: 'amalie@email.com',    age: 12 },
+    { name: 'Wladimir',  email: 'wladimir@email.com',  age: 30 },
+    { name: 'Samantha',  email: 'samantha@email.com',  age: 31 },
+    { name: 'Estefanía', email: 'estefanía@email.com', age: 16 },
+    { name: 'Natasha',   email: 'natasha@email.com',   age: 54 },
+    { name: 'Nicole',    email: 'nicole@email.com',    age: 43 },
+    { name: 'Adrian',    email: 'adrian@email.com',    age: 21 }
+  ];
+  
+});</pre>
+                    </section>
+                    <section id="ui-select-remote">
+                      <h1>ui-select(remote data)</h1>
+                      <!-- watch change of user to update rootScope for debugging-->
+                      <h3>demo</h3><a href="#" target="_blank" class="btn btn-info fiddle pull-right">UI Select jsFiddle</a>
+                      <div class="well line-example"><div ng-controller="UiSelectRemoteCtrl">
+  <a href="#" editable-uiselect="user.name" 
+            e-style="width: 300px;"
+            e-template="'addressInputTpl'"
+            onshow="loadPeople()">
+      {{user.name}}
+  </a>
+</div>
+<script type="text/ng-template" id="addressInputTpl">
+    <ui-select-match placeholder="Enter an user...">{{$select.selected.name}}</ui-select-match>
+    <ui-select-choices repeat="value.name as value in people | uiSelectSearchFilter: {name: $select.search}">
+         <div ng-bind-html="value.name | highlight:$select.search"></div>
+         <div ng-bind="value.email"></div>
+    </ui-select-choices>
+</script></div>
+                      <pre>{{ debug["ui-select-remote"] | json }}</pre>
+                      <p><p>Date control is implemented via <a href="https://github.com/angular-ui/ui-select/">Angular-ui ui-select</a>.  </p>
+<p>And set <code>editable-uiselect</code> attribute in editable element.
+Other parameters can be defined via <code>e-*</code> syntax.</p>
+<ul>
+<li><code>e-datasrc</code> : data source</li>
+<li><code>e-valuekey</code> : which property will present for your value</li>
+<li><code>e-displaynamekey</code> : which property will present for your display string</li>
+</ul>
+</p>
+                      <!--script(src=dir+'/controller.js')-->
+                      <script>app.controller('UiSelectRemoteCtrl', function($scope, $http, $q) {
+  $scope.user = { name: 'Adam'};
+  $scope.people = [];
+  $scope.loadPeople = function() {
+    return $scope.people.length ? null : $http.get('/people').success(function(data) {
+      $scope.people = data;
+      $scope.people;
+    });
+  };
+$scope.$watch("user", function(v) { $scope.$parent.debug["ui-select-remote"]=v; }); });</script>
+                      <h3>html</h3>
+                      <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;UiSelectRemoteCtrl&quot;&gt;
+  &lt;a href=&quot;#&quot; editable-uiselect=&quot;user.name&quot; 
+            e-style=&quot;width: 300px;&quot;
+            e-template=&quot;'addressInputTpl'&quot;
+            onshow=&quot;loadPeople()&quot;&gt;
+      {{user.name}}
+  &lt;/a&gt;
+&lt;/div&gt;
+&lt;script type=&quot;text/ng-template&quot; id=&quot;addressInputTpl&quot;&gt;
+    &lt;ui-select-match placeholder=&quot;Enter an user...&quot;&gt;{{$select.selected.name}}&lt;/ui-select-match&gt;
+    &lt;ui-select-choices repeat=&quot;value.name as value in people | uiSelectSearchFilter: {name: $select.search}&quot;&gt;
+         &lt;div ng-bind-html=&quot;value.name | highlight:$select.search&quot;&gt;&lt;/div&gt;
+         &lt;div ng-bind=&quot;value.email&quot;&gt;&lt;/div&gt;
+    &lt;/ui-select-choices&gt;
+&lt;/script&gt;</pre>
+                      <h3>controller.js</h3>
+                      <pre class="prettyprint">app.controller('UiSelectRemoteCtrl', function($scope, $http, $q) {
+  $scope.user = { name: 'Adam'};
+  $scope.people = [];
+  $scope.loadPeople = function() {
+    return $scope.people.length ? null : $http.get('/people').success(function(data) {
+      $scope.people = data;
+      $scope.people;
+    });
+  };
+});</pre>
+                    </section>
+                    <section id="custom">
+                      <h1>custom</h1>
+                      <!-- watch change of user to update rootScope for debugging-->
+                      <h3>demo</h3><a href="#" target="_blank" class="btn btn-info fiddle pull-right">UI Select jsFiddle</a>
+                      <div class="well line-example"><div ng-controller="Custom">
+  <a href="#" editable-custom="user.name" 
+            e-template="'customTpl'"
+            onshow="updateName($modelScope)">
+      {{user.name}}
+  </a>
+</div>
+<script type="text/ng-template" id="customTpl">
+  <table>
+  	<tr>
+  		<td>
+  			First Name
+  		</td>
+  		<td>
+  			<input type="text" ng-model="firstName" ng-change="updateName($modelScope)" />
+  		</td>
+  	</tr>
+  	<tr>
+  		<td>Last Name</td>
+  		<td>
+  			<input type="text" ng-model="lastName"  ng-change="updateName($modelScope)" />
+  		</td>
+  	</td>
+  </table>
+</script></div>
+                      <pre>{{ debug["custom"] | json }}</pre>
+                      <p><p>This directive let user can custom their input</p>
+<ul>
+<li><code>e-template</code> : template for your input</li>
+<li><code>onshow</code> : call your initialize input</li>
+<li><code>$modelScope</code>: is a variable relate to editable scope.</li>
+</ul>
+</p>
+                      <!--script(src=dir+'/controller.js')-->
+                      <script>app.controller('Custom', function($scope, $http, $q) {
+  $scope.user = { name: 'Adam'};
+
+  $scope.firstName="bruno"
+  $scope.lastName = "mars";
+  $scope.updateName = function(modelScope)
+  {
+  	var userName = modelScope.firstName + " " + modelScope.lastName;
+  	modelScope.$data = userName;
+  }
+$scope.$watch("user", function(v) { $scope.$parent.debug["custom"]=v; }); });</script>
+                      <h3>html</h3>
+                      <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;Custom&quot;&gt;
+  &lt;a href=&quot;#&quot; editable-custom=&quot;user.name&quot; 
+            e-template=&quot;'customTpl'&quot;
+            onshow=&quot;updateName($modelScope)&quot;&gt;
+      {{user.name}}
+  &lt;/a&gt;
+&lt;/div&gt;
+&lt;script type=&quot;text/ng-template&quot; id=&quot;customTpl&quot;&gt;
+  &lt;table&gt;
+  	&lt;tr&gt;
+  		&lt;td&gt;
+  			First Name
+  		&lt;/td&gt;
+  		&lt;td&gt;
+  			&lt;input type=&quot;text&quot; ng-model=&quot;firstName&quot; ng-change=&quot;updateName($modelScope)&quot; /&gt;
+  		&lt;/td&gt;
+  	&lt;/tr&gt;
+  	&lt;tr&gt;
+  		&lt;td&gt;Last Name&lt;/td&gt;
+  		&lt;td&gt;
+  			&lt;input type=&quot;text&quot; ng-model=&quot;lastName&quot;  ng-change=&quot;updateName($modelScope)&quot; /&gt;
+  		&lt;/td&gt;
+  	&lt;/td&gt;
+  &lt;/table&gt;
+&lt;/script&gt;</pre>
+                      <h3>controller.js</h3>
+                      <pre class="prettyprint">app.controller('Custom', function($scope, $http, $q) {
+  $scope.user = { name: 'Adam'};
+
+  $scope.firstName=&quot;bruno&quot;
+  $scope.lastName = &quot;mars&quot;;
+  $scope.updateName = function(modelScope)
+  {
+  	var userName = modelScope.firstName + &quot; &quot; + modelScope.lastName;
+  	modelScope.$data = userName;
+  }
+});</pre>
+                    </section>
                     <section id="text-customize">
                       <h1>Customize input</h1>
                       <!-- watch change of user to update rootScope for debugging-->
@@ -1091,15 +1397,15 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["validate-remote"]=v; }
 });</pre>
                     </section>
                     <section id="o-validator">
-                      <h1>Validator attribute(single)</h1>
+                      <h1>Validator attribute</h1>
                       <!-- watch change of user to update rootScope for debugging-->
                       <h3>demo</h3><a href="#" target="_blank" class="btn btn-info fiddle pull-right">jsFiddle</a>
                       <div class="well line-example"><div ng-controller="OValidatorCtrl">
   <a href="#" o-validator="required" onbeforesave="checkname($data)" editable-text="user.name">{{ user.name || 'empty' }}</a>
 </div></div>
                       <pre>{{ debug["o-validator"] | json }}</pre>
-                      <p><p>To validate a form field you can add <code>o-validator</code> attribute to validate your input. <code>o-validator</code> can be inputed by multiple validator(which are seperated by comma).
-To define your own validation rule, you have to config your rules in <code>editableValidationRules</code> factory.</p>
+                      <p><p>To validate a form field you can add <code>o-validator</code> attribute to validate your input. <code>o-validator</code> can be inputed by multiple validator(which are seperated by comma).<br>Ex: <code>&lt;a href=&quot;#&quot; o-validator=&quot;required,max300chars&quot;</code> </p>
+<p>To define your own validation rule, you have to config your rules in <code>editableValidationRules</code> factory.<br>Ex:<br>    <code>editableValidationRules.addValidator({</code><br>    <code>validatorName:&#39;max300chars&#39;,</code><br>    <code>errorMsg: &#39;Max 300 characters&#39;,</code><br>    <code>validationFunc: max300chars</code><br>    <code>});</code>  </p>
 </p>
                       <!--script(src=dir+'/controller.js')-->
                       <script>app.controller('OValidatorCtrl', function($scope) {
@@ -1166,9 +1472,10 @@ Useful for validation and processing errors.</li>
   };
 
   $scope.updateUser = function(data) {
+  	console.log(data);
     return $http.post('/updateUser', {id: $scope.user.id, name: data});
   };
-$scope.$watch("user", function(v) { $scope.$parent.debug["onbeforesave"]=v; }); });</script>
+});;</script>
                       <h3>html</h3>
                       <pre class="prettyprint ng-non-bindable">&lt;div ng-controller=&quot;OnbeforesaveCtrl&quot;&gt;
   &lt;a href=&quot;#&quot; editable-text=&quot;user.name&quot; onbeforesave=&quot;updateUser($data)&quot;&gt;
@@ -1183,9 +1490,10 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["onbeforesave"]=v; }); 
   };
 
   $scope.updateUser = function(data) {
+  	console.log(data);
     return $http.post('/updateUser', {id: $scope.user.id, name: data});
   };
-});</pre>
+});;</pre>
                     </section>
                     <section id="onaftersave">
                       <h1>Submit via onaftersave</h1>
@@ -1245,7 +1553,7 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["onaftersave"]=v; }); }
     <div>
       <!-- editable username (text with validation) -->
       <span class="title">User name: </span>
-      <span editable-text="user.name" e-name="name" onbeforesave="checkName($data)" e-required>{{ user.name || 'empty' }}</span>
+      <span editable-text="user.name" e-name="name" o-validator="required" onbeforesave="checkName($data)">{{ user.name || 'empty' }}</span>
     </div> 
 
     <div>
@@ -1383,7 +1691,7 @@ $scope.$watch("user", function(v) { $scope.$parent.debug["onaftersave"]=v; }); }
     &lt;div&gt;
       &lt;!-- editable username (text with validation) --&gt;
       &lt;span class=&quot;title&quot;&gt;User name: &lt;/span&gt;
-      &lt;span editable-text=&quot;user.name&quot; e-name=&quot;name&quot; onbeforesave=&quot;checkName($data)&quot; e-required&gt;{{ user.name || 'empty' }}&lt;/span&gt;
+      &lt;span editable-text=&quot;user.name&quot; e-name=&quot;name&quot; o-validator=&quot;required&quot; onbeforesave=&quot;checkName($data)&quot;&gt;{{ user.name || 'empty' }}&lt;/span&gt;
     &lt;/div&gt; 
 
     &lt;div&gt;

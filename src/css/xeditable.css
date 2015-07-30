@@ -3,9 +3,10 @@
 
 /* class for single editable element */
 .editable-wrap {
-  display: inline-block;
-  white-space: nowrap;
+  /*display: inline-block;*/
+  /*white-space: nowrap;*//**fix layout overlow of submit btn*/
   margin: 0;
+  width: 100%;/*to work with bootstrap form-horizontal*/
 }
 
 /* remove bottom-margin for bootstrap */
@@ -23,12 +24,13 @@
 
 /* keep buttons on the same line */
 .editable-wrap .editable-input {
-  display: inline-block;
+  /*display: inline-block;*/
 }
 
 .editable-buttons {
   display: inline-block;
   vertical-align: top;
+  margin-top: 2px;
 }
 
 .editable-buttons button {
@@ -112,5 +114,11 @@ a.editable-empty:focus {
   color: #DD1144;  
   text-decoration: none;
 }
+
+/**BS3 input width for form-inline*/
+form.form-inline .editable-wrap{
+  width: auto;
+}
+
 
 

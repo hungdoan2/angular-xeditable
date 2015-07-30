@@ -15,7 +15,17 @@ Input types: text|email|tel|number|url|search|color|date|datetime|time|month|wee
       function(editableDirectiveFactory) {
         return editableDirectiveFactory({
           directiveName: directiveName,
-          inputTpl: '<input type="'+type+'">'
+          inputTpl: '<input type="'+type+'">',
+          render: function() {
+            this.parent.render.call(this);
+            var inputDirective = this.attrs.oDirective;
+            if(inputDirective)
+            {
+              var dparts = inputDirective.split('=');
+              this.inputEl.attr(dparts[0],dparts[1] || '');              
+            }
+            
+          }
         });
     }]);
   });

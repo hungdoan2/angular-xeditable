@@ -1,7 +1,7 @@
 /*!
 angular-xeditable - 0.1.9
 Edit-in-place for angular.js
-Build date: 2015-02-09 
+Build date: 2015-05-24 
 */
 /**
  * Angular-xeditable module 
@@ -148,6 +148,36 @@ angular.module('xeditable').directive('editableChecklist', [
     });
 }]);
 /*
+Angular-ui bootstrap datepicker
+http://angular-ui.github.io/bootstrap/#/datepicker
+*/
+angular.module('xeditable').directive('editableCustom', ['editableDirectiveFactory', '$templateCache','$parse',
+  function(editableDirectiveFactory,$templateCache,$parse) {
+    return editableDirectiveFactory({
+      directiveName: 'editableCustom',
+      inputTpl: '<div></div>',
+      render: function() {
+        var self = this;
+        self.parent.render.call(this);
+
+        var html = '';
+        if(!angular.isDefined(self.attrs.eTemplate))
+        {
+          console.log('Your "'+self.attrs.eTemplate+'" does not exist!');
+        }        
+        html = $templateCache.get($parse(self.attrs.eTemplate)(self.scope));
+        self.inputEl.append(html);
+        //Generate model;
+        //var parser = $parse(self.name);
+        //var defaultValue = parser(self.scope);
+        //self.scope[self.name.split('.')[0]] = {};
+        //parser.assign(self.scope,defaultValue);
+        //
+        self.scope.$modelScope = self.scope;
+      }
+    });
+}]);
+/*
 Input types: text|email|tel|number|url|search|color|date|datetime|time|month|week
 */
 
@@ -164,7 +194,17 @@ Input types: text|email|tel|number|url|search|color|date|datetime|time|month|wee
       function(editableDirectiveFactory) {
         return editableDirectiveFactory({
           directiveName: directiveName,
-          inputTpl: '<input type="'+type+'">'
+          inputTpl: '<input type="'+type+'">',
+          render: function() {
+            this.parent.render.call(this);
+            var inputDirective = this.attrs.oDirective;
+            if(inputDirective)
+            {
+              var dparts = inputDirective.split('=');
+              this.inputEl.attr(dparts[0],dparts[1] || '');              
+            }
+            
+          }
         });
     }]);
   });
@@ -259,6 +299,46 @@ angular.module('xeditable').directive('editableTextarea', ['editableDirectiveFac
     });
 }]);
 
+/*
+Angular-ui bootstrap datepicker
+http://angular-ui.github.io/bootstrap/#/datepicker
+*/
+angular.module('xeditable').directive('editableUiselect', ['editableDirectiveFactory', '$templateCache','$parse',
+  function(editableDirectiveFactory,$templateCache,$parse) {
+    return editableDirectiveFactory({
+      directiveName: 'editableUiselect',
+      inputTpl: '<div ui-select></div>',
+      render: function() {
+        this.parent.render.call(this);
+        console.log(this.scope.addressInputTplId);
+        var html = '';
+        if(angular.isDefined(this.attrs.eTemplate))
+        {
+          html = $templateCache.get($parse(this.attrs.eTemplate)(this.scope));
+          if(!angular.isDefined(html))
+          {
+            console.log('Your "'+this.attrs.eTemplate+'" does not exist!');
+            throw 'Your "'+this.attrs.eTemplate+'" does not exist!';
+          }
+        }
+        else{
+          var displayName = this.attrs.eDisplaynamekey,
+              valueKey = this.attrs.eValuekey,
+              dataSource = this.attrs.eDatasrc;
+              html = ''
++'<ui-select-match placeholder="Enter your input...">{{$select.selected.'+displayName+'}}</ui-select-match>'
++'<ui-select-choices '
++'repeat="item.'+valueKey+' as item in '+dataSource
++' | uiSelectSearchFilter: {'+displayName+': $select.search}">'
++'<div ng-bind-html="item.'+displayName+' | highlight:$select.search"></div>'
++'</ui-select-choices>';
+        }
+        this.inputEl.attr('ng-model','_selectedValue');
+        this.inputEl.attr('on-select','$parent.$data = $model');
+        this.inputEl.append(html);
+      }
+    });
+}]);
 /**
  * EditableController class. 
  * Attached to element with `editable-xxx` directive.
@@ -419,7 +499,7 @@ angular.module('xeditable').factory('editableController',
       if ($attrs.oValidator) {
         console.log('ele direc validator:'+$attrs.oValidator);
         self.validate = function() {
-          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator));
+          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator,$element,$scope.$parent));
         };
       }
       /**
@@ -510,6 +590,11 @@ angular.module('xeditable').factory('editableController',
 
       // add directiveName class to editor, e.g. `editable-text`
       self.editorEl.addClass(editableUtils.camelToDash(self.directiveName));
+      // if directiveName == "editable-custom" , remove class form-inline
+      if(self.directiveName === "editableCustom")
+      {
+        self.editorEl.removeClass("form-inline");
+      }
 
       if(self.single) {
         self.editorEl.attr('editable-form', '$form');
@@ -686,6 +771,8 @@ angular.module('xeditable').factory('editableController',
     };
 
     self.save = function() {
+      console.log('save');
+      console.log(self.scope.$data);
       valueGetter.assign($scope.$parent, angular.copy(self.scope.$data));
 
       // no need to call handleEmpty here as we are watching change of model value
@@ -1365,6 +1452,38 @@ angular.module('xeditable').directive('editableForm',
       }
     };
 }]);
+(function () {
+    angular.module('xeditable')
+    .filter('uiSelectSearchFilter', function() {
+      return function(items, props) {
+        var out = [];
+        
+        if (angular.isArray(items)) {
+          items.forEach(function(item) {
+            var itemMatches = false;
+
+            var keys = Object.keys(props);
+            for (var i = 0; i < keys.length; i++) {
+              var prop = keys[i];
+              var text = props[prop].toLowerCase();
+              if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+                itemMatches = true;
+                break;
+              }
+            }
+
+            if (itemMatches) {
+              out.push(item);
+            }
+          });
+        } else {
+          // Let the output be the input untouched
+          out = items;
+        }
+        return out;
+      };
+    });
+}).call();
 /**
  * editablePromiseCollection
  *  
@@ -1577,7 +1696,7 @@ angular.module('xeditable').factory('editableThemes', function() {
     'bs3': {
       formTpl:     '<form class="form-inline editable-wrap" role="form"></form>',
       noformTpl:   '<span class="editable-wrap"></span>',
-      controlsTpl: '<div class="editable-controls form-group" ng-class="{\'has-error\': $error}"></div>',
+      controlsTpl: '<div class="editable-controls" ng-class="{\'has-error\': $error}"></div>',
       inputTpl:    '',
       errorTpl:    '<div class="editable-error help-block" ng-show="$error" ng-bind="$error"></div>',
       buttonsTpl:  '<span class="editable-buttons"></span>',
@@ -1634,24 +1753,22 @@ angular.module('xeditable').factory('editableThemes', function() {
     angular.module('xeditable')
         .run(['editableValidationRules',
             function (editableValidationRules) {
-                function max300chars(value)
-                {
-                    return value.length <=300;
-                }
+                editableValidationRules.setRejectMsg("There is an error white validate");
+
                 function number(value)
                 {
                     var patt = new RegExp(/^\d+$/);
-                    return patt.test(value);
+                    return !(value && !patt.test(value));
+                }
+                function email(value)
+                {
+                    var patt = new RegExp(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/);
+                    return !(value && !patt.test(value));
                 }
                 function required(value)
                 {
-                    return (!!value) && (typeof (value === "String") && value.trim().length > 0);
+                    return value && ((typeof (value) === "string") && value.length > 0);
                 }
-                editableValidationRules.addValidator({
-                    validatorName:'max300chars',
-                    errorMsg: 'Max 300 characters',
-                    validationFunc: max300chars
-                });
                 editableValidationRules.addValidator({
                     validatorName:'required',
                     errorMsg: 'Required',
@@ -1662,17 +1779,26 @@ angular.module('xeditable').factory('editableThemes', function() {
                     errorMsg: 'Have to be a number',
                     validationFunc: number
                 });
+
+                editableValidationRules.addValidator({
+                    validatorName:'email',
+                    errorMsg: 'Your email address is not valid',
+                    validationFunc: email
+                });
             }
         ]);
 }).call();
 
-'use trick';
 (function(){
-
-
+  "use strict";
 function editableValidationRules(){
   var validatorFuncs={};//validator container
   var errorMsgs={};//validator container
+  var rejectMsg = "There is an error white validate";
+  /**
+   * @namespace validationRule
+   * @type {Object}
+   */
   var validationRule={};
 
   /**
@@ -1687,41 +1813,50 @@ function editableValidationRules(){
     //check if current validationName isExist
     if(angular.isDefined(validatorFuncs[options.validatorName]))
       {
-        throw 'Your validation name : "'+options.validatorName+'" already exists';
+        console.log("Your validation name : \""+options.validatorName+"\" already exists, we will override it");
       }
     // If there is no exist validator, then push it to the list
     validatorFuncs[options.validatorName] = options.validationFunc;
     errorMsgs[options.validatorName] = options.errorMsg;
   };//End addValidator
   
+  /**
+   * get validation Msg
+   * @memberOf validationRule
+   * @param  {string} validatorName 
+   * @return {void}               
+   */
   validationRule.getMsg = function(validatorName){
     return errorMsgs[validatorName];
   };
   validationRule.getValidatorFunc = function(validatorName){
     return validatorFuncs[validatorName];
   };
-  /*validationRule.validatorIsExist = function(varlidatorNames){
-    var validatorList = varlidatorNames.split(',');
-    for(var i = 0; i < validatorList.length; i++)
-    {
-      if(!angular.isDefined(validatorFuncs[validatorList[i].trim()]))
-      {
-        return false;
-      }
-    }
-    return true;
-  };//End validatorIsExist*/
+  validationRule.setRejectMsg = function(rejectMess){
+     rejectMsg = rejectMess;
+  };
+  validationRule.getRejectMsg = function(rejectMsg){
+    return rejectMsg;
+  };
   return validationRule;
 }
 
-editableValidator.$inject = ['$q','editableValidationRules'];
+editableValidator.$inject = ["$q","editableValidationRules"];
 function editableValidator($q,editableValidationRules){
    var validator = {};
-   function runValidate(value, validationName){
+
+   /**
+    * run validator 
+    * @param  {variant} value          [description]
+    * @param  {String} validationName [description]
+    * @param  {String} element        [description]
+    * @return {promise}                [description]
+    */
+   function runValidate(value, validationName,element,scope){
     var deferred = $q.defer();
     var validateResult;
     var validatorFunc = editableValidationRules.getValidatorFunc(validationName);
-    validateResult = validatorFunc(value);
+    validateResult = validatorFunc(value,element,scope);
     if(angular.isObject(validateResult))
     {
       validateResult.then(function(result){
@@ -1737,10 +1872,10 @@ function editableValidator($q,editableValidationRules){
             msg : editableValidationRules.getMsg(validationName)
           });
         }
-      },function(){
+      },function(resolveData){
         deferred.resolve({
             isValid: false,
-            msg : editableValidationRules.getMsg(validationName)
+            msg : resolveData || editableValidationRules.getRejectMsg()
           });
       });
     }
@@ -1757,8 +1892,16 @@ function editableValidator($q,editableValidationRules){
     }
     return deferred.promise;
    }
-  validator.validate = function (value, validatorNames){
-    var validatorList = validatorNames.split(','),
+
+   /**
+    * validate the input value by one-or-more defined validators
+    * @param  {variant} value          
+    * @param  {String} validatorNames 
+    * @param  {element} element        
+    * @return {boolean}                
+    */
+  validator.validate = function (value, validatorNames, element,scope){
+    var validatorList = validatorNames.split(","),
         validatorName;
        
   
@@ -1767,17 +1910,22 @@ function editableValidator($q,editableValidationRules){
     for(var i = 0; i < validatorList.length; i++)
     {
       validatorName = validatorList[i].trim();
-      promiseList.push(runValidate(value, validatorName));
+      promiseList.push(runValidate(value, validatorName,element,scope));
     }
 
     var promises = $q.all(promiseList).then(function(values){
+      //After all promise is executed , check if it is valid
+      
       for(var i = 0; i < values.length; i++)
       {
         if(!values[i].isValid)
         {
+          // if there are any invalid data, return the invalid result imediately
           return values[i].msg;
         }
       }
+
+      //if there is no invalid data, return the valid result 
       return true;
     });
 
@@ -1787,8 +1935,8 @@ function editableValidator($q,editableValidationRules){
   return validator;
 }
 
-angular.module('xeditable')
-  .factory('editableValidator',editableValidator)
-  .factory('editableValidationRules',editableValidationRules);
+angular.module("xeditable")
+  .factory("editableValidator",editableValidator)
+  .factory("editableValidationRules",editableValidationRules);
 
 }).call();

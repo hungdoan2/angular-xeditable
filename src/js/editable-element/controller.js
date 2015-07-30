@@ -158,7 +158,7 @@ angular.module('xeditable').factory('editableController',
       if ($attrs.oValidator) {
         console.log('ele direc validator:'+$attrs.oValidator);
         self.validate = function() {
-          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator));
+          return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator,$element,$scope.$parent));
         };
       }
       /**
@@ -249,6 +249,11 @@ angular.module('xeditable').factory('editableController',
 
       // add directiveName class to editor, e.g. `editable-text`
       self.editorEl.addClass(editableUtils.camelToDash(self.directiveName));
+      // if directiveName == "editable-custom" , remove class form-inline
+      if(self.directiveName === "editableCustom")
+      {
+        self.editorEl.removeClass("form-inline");
+      }
 
       if(self.single) {
         self.editorEl.attr('editable-form', '$form');
@@ -425,6 +430,8 @@ angular.module('xeditable').factory('editableController',
     };
 
     self.save = function() {
+      console.log('save');
+      console.log(self.scope.$data);
       valueGetter.assign($scope.$parent, angular.copy(self.scope.$data));
 
       // no need to call handleEmpty here as we are watching change of model value
