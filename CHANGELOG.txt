@@ -1,5 +1,9 @@
 Angular-xeditable changelog
 =============================
+Version 0.1.* Jun 21, 2016
+----------------------------
+[enh] Add originData
+
 Version 0.1.9 March 02, 2015
 ----------------------------
 [enh] support 3rd directive in text editor

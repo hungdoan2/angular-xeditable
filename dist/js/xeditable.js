@@ -1,7 +1,7 @@
 /*!
 angular-xeditable - 0.1.9
 Edit-in-place for angular.js
-Build date: 2015-05-24 
+Build date: 2016-06-21 
 */
 /**
  * Angular-xeditable module 
@@ -490,14 +490,14 @@ angular.module('xeditable').factory('editableController',
        * @memberOf editable-element
        */
       if ($attrs.onbeforesave) {
-        console.log('ele direc onbeforesave:'+$attrs.onbeforesave);
+        //console.log('ele direc onbeforesave:'+$attrs.onbeforesave);
         self.onbeforesave = function() {
-          console.log($scope);
+          //console.log($scope);
           return self.catchError($parse($attrs.onbeforesave)($scope));
         };
       }
       if ($attrs.oValidator) {
-        console.log('ele direc validator:'+$attrs.oValidator);
+        //console.log('ele direc validator:'+$attrs.oValidator);
         self.validate = function() {
           return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator,$element,$scope.$parent));
         };
@@ -616,6 +616,8 @@ angular.module('xeditable').factory('editableController',
       self.scope.$data = self.useCopy ? 
         angular.copy(valueGetter($scope.$parent)) : 
         valueGetter($scope.$parent);
+		
+		self.scope.$originData = angular.copy(self.scope.$data);
     };
 
     //show
@@ -771,8 +773,8 @@ angular.module('xeditable').factory('editableController',
     };
 
     self.save = function() {
-      console.log('save');
-      console.log(self.scope.$data);
+      //console.log('save');
+      //console.log(self.scope.$data);
       valueGetter.assign($scope.$parent, angular.copy(self.scope.$data));
 
       // no need to call handleEmpty here as we are watching change of model value
@@ -990,7 +992,7 @@ angular.module('xeditable').factory('editableFormController',
 
   var base = {
     $addEditable: function(editable) {
-      console.log('$addEditable');
+      //console.log('$addEditable');
       //console.log('add editable', editable.elem, editable.elem.bind);
       this.$editables.push(editable);
 
@@ -1009,7 +1011,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $removeEditable: function(editable) {
-      console.log('$removeEditable');
+      //console.log('$removeEditable');
       //arrayRemove
       for(var i=0; i < this.$editables.length; i++) {
         if(this.$editables[i] === editable) {
@@ -1026,7 +1028,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $show: function() {
-      console.log('$show');
+      //console.log('$show');
       if (this.$visible) {
         return;
       }
@@ -1075,7 +1077,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $activate: function(name) {
-      console.log('$activate : '+ name);
+      //console.log('$activate : '+ name);
       var i;
       if (this.$editables.length) {
         //activate by name
@@ -1083,7 +1085,7 @@ angular.module('xeditable').factory('editableFormController',
           for(i=0; i<this.$editables.length; i++) {
             if (this.$editables[i].name === name) {
               this.$editables[i].activate();
-              console.log('$activate 1');
+              //console.log('$activate 1');
               return;
             }
           }
@@ -1093,7 +1095,7 @@ angular.module('xeditable').factory('editableFormController',
         for(i=0; i<this.$editables.length; i++) {
           if (this.$editables[i].error) {
             this.$editables[i].activate();
-            console.log('$activate 2');
+            //console.log('$activate 2');
             return;
           }
         }
@@ -1110,7 +1112,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $hide: function() {
-      console.log('$hide');
+      //console.log('$hide');
       if (!this.$visible) {
         return;
       }      
@@ -1133,7 +1135,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $cancel: function() {
-      console.log('$cancel');
+      //console.log('$cancel');
       if (!this.$visible) {
         return;
       }      
@@ -1148,7 +1150,7 @@ angular.module('xeditable').factory('editableFormController',
     },    
 
     $setWaiting: function(value) {
-      console.log('$setWaiting');
+      //console.log('$setWaiting');
       this.$waiting = !!value;
       // we can't just set $waiting variable and use it via ng-disabled in children
       // because in editable-row form is not accessible
@@ -1166,7 +1168,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $setError: function(name, msg) {
-      console.log('$setError');
+      //console.log('$setError');
       angular.forEach(this.$editables, function(editable) {
         if(!name || editable.name === name) {
           editable.setError(msg);
@@ -1175,7 +1177,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $submit: function() {
-      console.log('$submit');
+      //console.log('$submit');
       if (this.$waiting) {
         return;
       } 
@@ -1231,7 +1233,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $save: function() {
-      console.log('$save');
+      //console.log('$save');
       // write model for each editable
       angular.forEach(this.$editables, function(editable) {
         editable.save();
@@ -1405,7 +1407,7 @@ angular.module('xeditable').directive('editableForm',
                * 
                */
               if(attrs.onbeforesave) {
-                console.log('form direc:'+attrs.onaftersave);
+                //console.log('form direc:'+attrs.onaftersave);
                 eForm.$onbeforesave = function() {
                   return $parse(attrs.onbeforesave)(scope, {$data: eForm.$data});
                 };
@@ -1813,7 +1815,7 @@ function editableValidationRules(){
     //check if current validationName isExist
     if(angular.isDefined(validatorFuncs[options.validatorName]))
       {
-        console.log("Your validation name : \""+options.validatorName+"\" already exists, we will override it");
+        //console.log("Your validation name : \""+options.validatorName+"\" already exists, we will override it");
       }
     // If there is no exist validator, then push it to the list
     validatorFuncs[options.validatorName] = options.validationFunc;

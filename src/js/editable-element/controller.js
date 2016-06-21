@@ -149,14 +149,14 @@ angular.module('xeditable').factory('editableController',
        * @memberOf editable-element
        */
       if ($attrs.onbeforesave) {
-        console.log('ele direc onbeforesave:'+$attrs.onbeforesave);
+        //console.log('ele direc onbeforesave:'+$attrs.onbeforesave);
         self.onbeforesave = function() {
-          console.log($scope);
+          //console.log($scope);
           return self.catchError($parse($attrs.onbeforesave)($scope));
         };
       }
       if ($attrs.oValidator) {
-        console.log('ele direc validator:'+$attrs.oValidator);
+        //console.log('ele direc validator:'+$attrs.oValidator);
         self.validate = function() {
           return self.catchError(editableValidator.validate($scope.$data, $attrs.oValidator,$element,$scope.$parent));
         };
@@ -275,6 +275,8 @@ angular.module('xeditable').factory('editableController',
       self.scope.$data = self.useCopy ? 
         angular.copy(valueGetter($scope.$parent)) : 
         valueGetter($scope.$parent);
+		
+		self.scope.$originData = angular.copy(self.scope.$data);
     };
 
     //show
@@ -430,8 +432,8 @@ angular.module('xeditable').factory('editableController',
     };
 
     self.save = function() {
-      console.log('save');
-      console.log(self.scope.$data);
+      //console.log('save');
+      //console.log(self.scope.$data);
       valueGetter.assign($scope.$parent, angular.copy(self.scope.$data));
 
       // no need to call handleEmpty here as we are watching change of model value

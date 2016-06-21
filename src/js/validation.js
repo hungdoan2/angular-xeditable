@@ -22,7 +22,7 @@ function editableValidationRules(){
     //check if current validationName isExist
     if(angular.isDefined(validatorFuncs[options.validatorName]))
       {
-        console.log("Your validation name : \""+options.validatorName+"\" already exists, we will override it");
+        //console.log("Your validation name : \""+options.validatorName+"\" already exists, we will override it");
       }
     // If there is no exist validator, then push it to the list
     validatorFuncs[options.validatorName] = options.validationFunc;
