@@ -50,7 +50,7 @@ angular.module('xeditable').factory('editableFormController',
 
   var base = {
     $addEditable: function(editable) {
-      console.log('$addEditable');
+      //console.log('$addEditable');
       //console.log('add editable', editable.elem, editable.elem.bind);
       this.$editables.push(editable);
 
@@ -69,7 +69,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $removeEditable: function(editable) {
-      console.log('$removeEditable');
+      //console.log('$removeEditable');
       //arrayRemove
       for(var i=0; i < this.$editables.length; i++) {
         if(this.$editables[i] === editable) {
@@ -86,7 +86,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $show: function() {
-      console.log('$show');
+      //console.log('$show');
       if (this.$visible) {
         return;
       }
@@ -135,7 +135,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $activate: function(name) {
-      console.log('$activate : '+ name);
+      //console.log('$activate : '+ name);
       var i;
       if (this.$editables.length) {
         //activate by name
@@ -143,7 +143,7 @@ angular.module('xeditable').factory('editableFormController',
           for(i=0; i<this.$editables.length; i++) {
             if (this.$editables[i].name === name) {
               this.$editables[i].activate();
-              console.log('$activate 1');
+              //console.log('$activate 1');
               return;
             }
           }
@@ -153,7 +153,7 @@ angular.module('xeditable').factory('editableFormController',
         for(i=0; i<this.$editables.length; i++) {
           if (this.$editables[i].error) {
             this.$editables[i].activate();
-            console.log('$activate 2');
+            //console.log('$activate 2');
             return;
           }
         }
@@ -170,7 +170,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $hide: function() {
-      console.log('$hide');
+      //console.log('$hide');
       if (!this.$visible) {
         return;
       }      
@@ -193,7 +193,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $cancel: function() {
-      console.log('$cancel');
+      //console.log('$cancel');
       if (!this.$visible) {
         return;
       }      
@@ -208,7 +208,7 @@ angular.module('xeditable').factory('editableFormController',
     },    
 
     $setWaiting: function(value) {
-      console.log('$setWaiting');
+      //console.log('$setWaiting');
       this.$waiting = !!value;
       // we can't just set $waiting variable and use it via ng-disabled in children
       // because in editable-row form is not accessible
@@ -226,7 +226,7 @@ angular.module('xeditable').factory('editableFormController',
      * @memberOf editable-form
      */
     $setError: function(name, msg) {
-      console.log('$setError');
+      //console.log('$setError');
       angular.forEach(this.$editables, function(editable) {
         if(!name || editable.name === name) {
           editable.setError(msg);
@@ -235,7 +235,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $submit: function() {
-      console.log('$submit');
+      //console.log('$submit');
       if (this.$waiting) {
         return;
       } 
@@ -291,7 +291,7 @@ angular.module('xeditable').factory('editableFormController',
     },
 
     $save: function() {
-      console.log('$save');
+      //console.log('$save');
       // write model for each editable
       angular.forEach(this.$editables, function(editable) {
         editable.save();

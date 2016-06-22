@@ -115,7 +115,7 @@ angular.module('xeditable').directive('editableForm',
                * 
                */
               if(attrs.onbeforesave) {
-                console.log('form direc:'+attrs.onaftersave);
+                //console.log('form direc:'+attrs.onaftersave);
                 eForm.$onbeforesave = function() {
                   return $parse(attrs.onbeforesave)(scope, {$data: eForm.$data});
                 };
